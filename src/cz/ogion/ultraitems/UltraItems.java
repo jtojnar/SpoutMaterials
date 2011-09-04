@@ -8,6 +8,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Type;
@@ -35,6 +36,7 @@ public class UltraItems extends JavaPlugin {
 
 	public void loadConfig() {
 		getConfiguration().load();
+		log.info(getConfiguration().getAll().toString());
 		config = this.getConfiguration().getNodes("UltraItems");
 		if (config != null) {
 			for(ConfigurationNode item : config.values()) {
@@ -56,64 +58,65 @@ public class UltraItems extends JavaPlugin {
 		}
 	}
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		// TODO: Test permissions support
-		// TODO: console
-		Player who = (Player) sender;
 		if(cmd.getName().equalsIgnoreCase("ultraitems")){
 			if(args.length == 1) {
 				if(args[0].equalsIgnoreCase("reload")) {
-					// TODO: reload command
-					if(who.hasPermission("ultraitems.reload")) {
+					if(sender.hasPermission("ultraitems.reload")) {
 						loadConfig();
-						who.sendMessage("Config reloaded.");
-						return true;
+						sender.sendMessage("Config reloaded.");
 					} else {
-						who.sendMessage("You don't have permission for reloading config.");
+						sender.sendMessage("You don't have permission for reloading config.");
 					}
+					return true;
 				} else if(args[0].equalsIgnoreCase("list")) {
-					if(who.hasPermission("ultraitems.list")) {
+					if(sender.hasPermission("ultraitems.list")) {
 						StringBuilder sb = new StringBuilder();
 						for(String s : config.keySet()) {
 							sb.append(s);
 							sb.append(" ");
 						}
-						who.sendMessage("UltraItems: " + sb.toString());
-						return true;
+						sender.sendMessage("UltraItems: " + sb.toString());
 					} else {
-						who.sendMessage("You don't have permission for list of ultra items.");
+						sender.sendMessage("You don't have permission for list of ultra items.");
 					}
+					return true;
 				} else if(config.containsKey(args[0])) {
-					if (who.hasPermission("ultraitems.give")){
-						if (who.hasPermission("ultraitems.give.*") || who.hasPermission("ultraitems.give."+args[0])){
-							try {
-								ConfigurationNode item = config.get(args[0]);
-								Integer itemid = item.getInt("item", 0);
-								Short itemdata = ((Integer)item.getInt("data", 0)).shortValue();
-								log.info("Giving " + args[0] + itemid+":"+itemdata);
-								if(itemid != 0 && itemdata != 0) {
-									ItemStack stack = new ItemStack(itemid, 1, itemdata);
-									int slot = who.getInventory().firstEmpty();
-									if(slot < 0) {
-										who.getWorld().dropItem(who.getLocation(), stack);
+					if (sender instanceof ConsoleCommandSender){
+						sender.sendMessage("This command must be run in-game.");
+					} else {
+						Player who = (Player) sender;
+						if (who.hasPermission("ultraitems.give")){
+							if (who.hasPermission("ultraitems.give.*") || who.hasPermission("ultraitems.give."+args[0])){
+								try {
+									ConfigurationNode item = config.get(args[0]);
+									Integer itemid = item.getInt("item", 0);
+									Short itemdata = ((Integer)item.getInt("data", 0)).shortValue();
+									log.info("Giving " + args[0] + itemid+":"+itemdata);
+									if(itemid != 0 && itemdata != 0) {
+										ItemStack stack = new ItemStack(itemid, 1, itemdata);
+										int slot = who.getInventory().firstEmpty();
+										if(slot < 0) {
+											who.getWorld().dropItem(who.getLocation(), stack);
+										} else {
+											who.getInventory().addItem(stack);
+										}
+										sender.sendMessage("Here you are!");
 									} else {
-										who.getInventory().addItem(stack);
+										sender.sendMessage(args[0]+" has incorrectly set data! Please contact server admin.");
 									}
-									who.sendMessage("Here you are!");
-								} else {
-									who.sendMessage(args[0]+" has incorrectly set data! Please contact server admin.");
+								} catch (Exception e) {
+									sender.sendMessage("Error:"+e.getMessage());
 								}
-								return true;
-							} catch (Exception e) {
-								who.sendMessage("Error:"+e.getMessage());
+							} else {
+								sender.sendMessage("You don't have permission to get " + args[0] + ".");
 							}
 						} else {
-							who.sendMessage("You don't have permission to get " + args[0] + ".");
+							who.sendMessage("You don't have permission to get ultra items.");
 						}
-					} else {
-						who.sendMessage("You don't have permission to get ultra items.");
 					}
+					return true;
 				} else {
-					who.sendMessage(args[0] + " isn't neither command or item!");
+					sender.sendMessage(args[0] + " isn't neither command or item!");
 				}
 			}
 		}

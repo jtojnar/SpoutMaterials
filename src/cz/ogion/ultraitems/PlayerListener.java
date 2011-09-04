@@ -13,10 +13,9 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 
 	public PlayerListener(UltraItems instance) {
 		plugin = instance;
-		plugin.getConfiguration().load();
-		config = plugin.getConfiguration().getNodes("UltraItems");
 	}
 	public void onPlayerInteract(PlayerInteractEvent event) {
+		config = plugin.config;
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 		Integer eventitemid = event.getItem().getTypeId();
@@ -28,6 +27,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 				String lclick = item.getString("lclick", null);
 				String rclick = item.getString("rclick", null);
 				if(itemid != 0 && itemdata != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
+					// TODO: consume
 					if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
 						player.chat(lclick);
 					} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
