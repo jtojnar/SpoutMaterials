@@ -36,7 +36,6 @@ public class UltraItems extends JavaPlugin {
 
 	public void loadConfig() {
 		getConfiguration().load();
-		log.info(getConfiguration().getAll().toString());
 		config = this.getConfiguration().getNodes("UltraItems");
 		if (config != null) {
 			for(ConfigurationNode item : config.values()) {
@@ -48,7 +47,6 @@ public class UltraItems extends JavaPlugin {
 				SpoutManager.getFileManager().addToCache(this, url);
 				SpoutManager.getItemManager().setItemTexture(new MaterialData(itemid).getItemType(), itemdata, this, url);
 				SpoutManager.getItemManager().setItemName(new MaterialData(itemid).getItemType(), itemdata, title);
-				log.info("["+pdfile.getName()+"] Added new item:"+item.getAll().toString());
 				// TODO: add to general
 				// TODO: crafting recipes
 			}
@@ -91,7 +89,6 @@ public class UltraItems extends JavaPlugin {
 									ConfigurationNode item = config.get(args[0]);
 									Integer itemid = item.getInt("item", 0);
 									Short itemdata = ((Integer)item.getInt("data", 0)).shortValue();
-									log.info("Giving " + args[0] + itemid+":"+itemdata);
 									if(itemid != 0 && itemdata != 0) {
 										ItemStack stack = new ItemStack(itemid, 1, itemdata);
 										int slot = who.getInventory().firstEmpty();
