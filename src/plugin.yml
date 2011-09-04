@@ -1,0 +1,31 @@
+name: UltraItems
+version: 0.1
+author: Lisured
+depend: [Spout]
+description: Create custom textured items with click action.
+main: cz.ogion.ultraitems.UltraItems
+commands:
+  ultraitems:
+    description: Provides functions to reload the config.
+    usage: /ultraitems <reload|list|itemname>
+    aliases: [ui]
+permissions:
+    ultraitems.*:
+        description: All UltraItems' commands
+        children:
+            ultraitem.reload: true
+            ultraitem.list: true
+            ultraitem.give: true
+            ultraitem.give.*: true
+    ultraitems.reload:
+        description: Reload config
+        default: op
+    ultraitems.list:
+        description: Show list of items
+        default: true
+    ultraitems.give:
+        description: Give item
+        default: true
+    ultraitems.give.*:
+        description: Give all items
+        default: true
