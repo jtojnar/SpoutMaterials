@@ -5,6 +5,7 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
 public class PlayerListener extends org.bukkit.event.player.PlayerListener {
@@ -27,6 +28,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 					Integer itemdata = item.getInt("data", 0);
 					String lclick = item.getString("lclick", null);
 					String rclick = item.getString("rclick", null);
+					Boolean consume = item.getBoolean("consume", false);
 					if(itemid != 0 && itemdata != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
 						// TODO: consume
 						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
@@ -35,6 +37,11 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							player.chat(rclick);
 							event.setCancelled(true);
 						} else {
+						}
+						if (consume) {
+							ItemStack is = player.getItemInHand();
+							is.setAmount(is.getAmount() - 1);
+							player.setItemInHand(is);
 						}
 					}
 				}
