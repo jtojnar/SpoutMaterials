@@ -30,7 +30,6 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 					String rclick = item.getString("rclick", null);
 					Boolean consume = item.getBoolean("consume", false);
 					if(itemid != 0 && itemdata != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
-						// TODO: consume
 						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
 							player.chat(lclick);
 						} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
