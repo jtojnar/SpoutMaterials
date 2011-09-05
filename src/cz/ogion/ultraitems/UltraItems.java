@@ -1,6 +1,7 @@
 package cz.ogion.ultraitems;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -39,16 +40,22 @@ public class UltraItems extends JavaPlugin {
 		config = this.getConfiguration().getNodes("UltraItems");
 		if (config != null) {
 			for(ConfigurationNode item : config.values()) {
-				// TODO: exception handling
-				String url = item.getString("url", null);
-				Integer itemid = item.getInt("item", 0);
-				Short itemdata = ((Integer) item.getInt("data", 0)).shortValue();
-				String title = item.getString("title", null);
-				SpoutManager.getFileManager().addToCache(this, url);
-				SpoutManager.getItemManager().setItemTexture(new MaterialData(itemid).getItemType(), itemdata, this, url);
-				SpoutManager.getItemManager().setItemName(new MaterialData(itemid).getItemType(), itemdata, title);
-				// TODO: add to general
-				// TODO: crafting recipes
+				try {
+					String url = item.getString("url", null);
+					Integer itemid = item.getInt("item", 0);
+					Short itemdata = ((Integer) item.getInt("data", 0)).shortValue();
+					String title = item.getString("title", null);
+					SpoutManager.getFileManager().addToCache(this, url);
+					SpoutManager.getItemManager().setItemTexture(new MaterialData(itemid).getItemType(), itemdata, this, url);
+					SpoutManager.getItemManager().setItemName(new MaterialData(itemid).getItemType(), itemdata, title);
+					// TODO: add to general
+					// TODO: crafting recipes
+				} catch (NoSuchMethodError e) {
+					log.log(Level.SEVERE, "[" + pdfile.getName() + "]" + " NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		} else {
 			this.getConfiguration().setProperty("UltraItems", null);
