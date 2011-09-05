@@ -16,24 +16,26 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	}
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		config = plugin.config;
-		Action action = event.getAction();
-		Player player = event.getPlayer();
-		Integer eventitemid = event.getItem().getTypeId();
-		Integer eventitemdata = ((Short) event.getItem().getDurability()).intValue();
-		if (config != null) {
-			for(ConfigurationNode item : config.values()) {
-				Integer itemid = item.getInt("item", 0);
-				Integer itemdata = item.getInt("data", 0);
-				String lclick = item.getString("lclick", null);
-				String rclick = item.getString("rclick", null);
-				if(itemid != 0 && itemdata != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
-					// TODO: consume
-					if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
-						player.chat(lclick);
-					} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
-						player.chat(rclick);
-						event.setCancelled(true);
-					} else {
+		if(event.hasItem()){
+			if (config != null) {
+				Action action = event.getAction();
+				Player player = event.getPlayer();
+				Integer eventitemid = event.getItem().getTypeId();
+				Integer eventitemdata = ((Short) event.getItem().getDurability()).intValue();
+				for(ConfigurationNode item : config.values()) {
+					Integer itemid = item.getInt("item", 0);
+					Integer itemdata = item.getInt("data", 0);
+					String lclick = item.getString("lclick", null);
+					String rclick = item.getString("rclick", null);
+					if(itemid != 0 && itemdata != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
+						// TODO: consume
+						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
+							player.chat(lclick);
+						} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
+							player.chat(rclick);
+							event.setCancelled(true);
+						} else {
+						}
 					}
 				}
 			}
