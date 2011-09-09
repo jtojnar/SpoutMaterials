@@ -7,6 +7,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
+import org.getspout.spoutapi.SpoutManager;
 
 public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	UltraItems plugin;
@@ -36,6 +37,9 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 								is.setAmount(is.getAmount() - 1);
 								player.setItemInHand(is);
 							}
+							if (lclick.getString("sound", null) != null){
+								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, lclick.getString("sound"), false, player.getLocation());
+							}
 						} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null && rclick.getString("action", null) != null) {
 							player.chat(rclick.getString("action"));
 							event.setCancelled(true);
@@ -43,6 +47,9 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 								ItemStack is = player.getItemInHand();
 								is.setAmount(is.getAmount() - 1);
 								player.setItemInHand(is);
+							}
+							if (rclick.getString("sound", null) != null){
+								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, rclick.getString("sound"), false, player.getLocation());
 							}
 						} else {
 						}
