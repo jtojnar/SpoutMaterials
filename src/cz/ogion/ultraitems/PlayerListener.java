@@ -30,8 +30,10 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 					ConfigurationNode lclick = item.getNode("lclick");
 					ConfigurationNode rclick = item.getNode("rclick");
 					if(itemid != 0 && itemdata != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
-						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null && lclick.getString("action", null) != null) {
-							player.chat(lclick.getString("action"));
+						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
+							if (lclick.getString("action", null) != null) {
+								player.chat(lclick.getString("action"));
+							}
 							if (lclick.getBoolean("consume", false)) {
 								ItemStack is = player.getItemInHand();
 								is.setAmount(is.getAmount() - 1);
@@ -40,9 +42,10 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							if (lclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, lclick.getString("sound"), false, player.getLocation());
 							}
-						} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null && rclick.getString("action", null) != null) {
-							player.chat(rclick.getString("action"));
-							event.setCancelled(true);
+						} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
+							if (rclick.getString("action", null) != null) {
+								player.chat(rclick.getString("action"));
+							}
 							if (rclick.getBoolean("consume", false)) {
 								ItemStack is = player.getItemInHand();
 								is.setAmount(is.getAmount() - 1);
@@ -51,6 +54,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							if (rclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, rclick.getString("sound"), false, player.getLocation());
 							}
+							event.setCancelled(true);
 						} else {
 						}
 					}
