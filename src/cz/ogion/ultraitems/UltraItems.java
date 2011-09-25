@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.Material;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,16 +46,28 @@ public class UltraItems extends JavaPlugin {
 					Integer itemid = item.getInt("item", 0);
 					Short itemdata = ((Integer) item.getInt("data", 0)).shortValue();
 					String title = item.getString("title", null);
+					Material material = new MaterialData(itemid).getItemType();
+					if (url == null) {
+						throw new Exception("You have to specify item texture url", new Throwable("nourl"));
+					} else if (itemid == 0 || material == null) {
+						throw new Exception("You have to specify itemid (don't use 0 or non-existing item id)", new Throwable("wrongitem"));
+					} else if (title == null) {
+						throw new Exception("You have to specify item title", new Throwable("notitle"));
+					}
 					SpoutManager.getFileManager().addToCache(this, url);
-					SpoutManager.getItemManager().setItemTexture(new MaterialData(itemid).getItemType(), itemdata, this, url);
-					SpoutManager.getItemManager().setItemName(new MaterialData(itemid).getItemType(), itemdata, title);
+					SpoutManager.getItemManager().setItemTexture(material, itemdata, this, url);
+					SpoutManager.getItemManager().setItemName(material, itemdata, title);
 					// TODO: add to general
 					// TODO: crafting recipes
 				} catch (NoSuchMethodError e) {
-					log.log(Level.SEVERE, "[" + pdfile.getName() + "]" + " NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
+					log.log(Level.SEVERE, "[" + pdfile.getName() + "] NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
 					e.printStackTrace();
 				} catch (Exception e) {
-					e.printStackTrace();
+					if (e.getCause().getMessage() == "wrongitem" || e.getCause().getMessage() == "notitle" || e.getCause().getMessage() == "nourl") {
+						log.warning("[" + pdfile.getName() + "] " + e.getMessage());
+					} else {
+						e.printStackTrace();
+					}
 				}
 			}
 		} else {
