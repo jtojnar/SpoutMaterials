@@ -96,7 +96,7 @@ public class UltraItems extends JavaPlugin {
 									ConfigurationNode item = config.get(args[0]);
 									Integer itemid = item.getInt("item", 0);
 									Short itemdata = ((Integer)item.getInt("data", 0)).shortValue();
-									if(itemid != 0 && itemdata != 0) {
+									if(itemid != 0) {
 										ItemStack stack = new ItemStack(itemid, 1, itemdata);
 										int slot = who.getInventory().firstEmpty();
 										if(slot < 0) {
