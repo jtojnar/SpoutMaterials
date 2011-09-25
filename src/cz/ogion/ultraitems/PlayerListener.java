@@ -3,6 +3,7 @@ package cz.ogion.ultraitems;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -55,6 +56,8 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, rclick.getString("sound"), false, player.getLocation());
 							}
 							event.setCancelled(true);
+							event.setUseInteractedBlock(Result.DENY);
+							event.setUseItemInHand(Result.DENY);
 						} else {
 						}
 					}
