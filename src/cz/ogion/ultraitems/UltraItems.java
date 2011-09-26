@@ -24,6 +24,7 @@ public class UltraItems extends JavaPlugin {
 	Logger log = Logger.getLogger("Minecraft");
 	PluginDescriptionFile pdfile;
 	PlayerListener playerListener;
+	EntityListener entityListener;
 
 	public void onDisable() {}
 
@@ -31,11 +32,14 @@ public class UltraItems extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pdfile = this.getDescription();
 		playerListener = new PlayerListener(this);
+		entityListener = new EntityListener(this);
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Monitor, this);
+		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Event.Priority.Normal, this);
 		loadConfig();
 		log.info(pdfile.getFullName()+" was enabled");
 	}
 
+	// TODO: reset textures and titles
 	public void loadConfig() {
 		getConfiguration().load();
 		config = this.getConfiguration().getNodes("UltraItems");
