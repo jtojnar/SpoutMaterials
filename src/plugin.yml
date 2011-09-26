@@ -1,5 +1,5 @@
 name: UltraItems
-version: 0.5
+version: 0.6
 author: Lisured
 depend: [Spout]
 description: Create custom textured items with click action.
