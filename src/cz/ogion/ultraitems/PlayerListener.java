@@ -38,7 +38,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							if (lclick.getBoolean("consume", false)) {
 								ItemStack is = player.getItemInHand();
 								is.setAmount(is.getAmount() - 1);
-								player.setItemInHand(is);
+							//	player.setItemInHand(is);
 							}
 							if (lclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, lclick.getString("sound"), false, player.getLocation());
