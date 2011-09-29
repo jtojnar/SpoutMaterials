@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -36,7 +37,7 @@ public class UltraItems extends JavaPlugin {
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Event.Priority.Normal, this);
 		loadConfig();
-		log.info(pdfile.getFullName()+" was enabled");
+		log.info(pdfile.getFullName() + " was enabled");
 	}
 
 	// TODO: reset textures and titles
@@ -64,7 +65,7 @@ public class UltraItems extends JavaPlugin {
 					// TODO: add to general
 					// TODO: crafting recipes
 				} catch (NoSuchMethodError e) {
-					log.log(Level.SEVERE, "[" + pdfile.getName() + "] NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
+					log.log(Level.SEVERE, "[" + pdfile.getName() + "] " + "NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
 					e.printStackTrace();
 				} catch (Exception e) {
 					if (e.getCause().getMessage() == "wrongitem" || e.getCause().getMessage() == "notitle" || e.getCause().getMessage() == "nourl") {
@@ -85,9 +86,9 @@ public class UltraItems extends JavaPlugin {
 				if(args[0].equalsIgnoreCase("reload")) {
 					if(sender.hasPermission("ultraitems.reload")) {
 						loadConfig();
-						sender.sendMessage("Config reloaded.");
+						sender.sendMessage(ChatColor.GREEN + "Config reloaded.");
 					} else {
-						sender.sendMessage("You don't have permission for reloading config.");
+						sender.sendMessage(ChatColor.RED + "You don't have permission for reloading config.");
 					}
 					return true;
 				} else if(args[0].equalsIgnoreCase("list")) {
@@ -97,14 +98,14 @@ public class UltraItems extends JavaPlugin {
 							sb.append(s);
 							sb.append(" ");
 						}
-						sender.sendMessage("UltraItems: " + sb.toString());
+						sender.sendMessage("UltraItems: " + ChatColor.YELLOW + sb.toString());
 					} else {
-						sender.sendMessage("You don't have permission for list of ultra items.");
+						sender.sendMessage(ChatColor.RED + "You don't have permission for list of ultra items.");
 					}
 					return true;
 				} else if(config.containsKey(args[0])) {
 					if (sender instanceof ConsoleCommandSender){
-						sender.sendMessage("This command must be run in-game.");
+						sender.sendMessage(ChatColor.RED + "This command must be run in-game.");
 					} else {
 						Player who = (Player) sender;
 						if (who.hasPermission("ultraitems.give")){
@@ -121,23 +122,23 @@ public class UltraItems extends JavaPlugin {
 										} else {
 											who.getInventory().addItem(stack);
 										}
-										sender.sendMessage("Here you are!");
+										sender.sendMessage(ChatColor.GREEN + "Here you are!");
 									} else {
-										sender.sendMessage(args[0]+" has incorrectly set data! Please contact server admin.");
+										sender.sendMessage(ChatColor.RED + args[0]+" has incorrectly set data! Please contact server admin.");
 									}
 								} catch (Exception e) {
-									sender.sendMessage("Error:"+e.getMessage());
+									sender.sendMessage(ChatColor.RED + "Error:"+e.getMessage());
 								}
 							} else {
-								sender.sendMessage("You don't have permission to get " + args[0] + ".");
+								sender.sendMessage(ChatColor.RED + "You don't have permission to get " + args[0] + ".");
 							}
 						} else {
-							who.sendMessage("You don't have permission to get ultra items.");
+							who.sendMessage(ChatColor.RED + "You don't have permission to get ultra items.");
 						}
 					}
 					return true;
 				} else {
-					sender.sendMessage(args[0] + " isn't neither command or item!");
+					sender.sendMessage(ChatColor.RED + args[0] + " isn't neither command or item!");
 				}
 			}
 		}
