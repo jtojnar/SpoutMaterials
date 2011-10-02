@@ -65,7 +65,7 @@ public class UltraItems extends JavaPlugin {
 					} else if (title == null) {
 						throw new Exception("You have to specify item title", new Throwable("notitle"));
 					}
-					SpoutManager.getFileManager().addToCache(this, url);
+					// SpoutManager.getFileManager().addToCache(this, url);
 					SpoutManager.getItemManager().setItemTexture(material, itemdata, this, url);
 					SpoutManager.getItemManager().setItemName(material, itemdata, title);
 					
@@ -75,10 +75,14 @@ public class UltraItems extends JavaPlugin {
 							String type = recipe.getString("type", "");
 							Integer amount = recipe.getInt("amount", 1);
 							if (type.equalsIgnoreCase("furnace")) {
-								ArrayList<Integer> ingredients = (ArrayList<Integer>) recipe.getIntList("ingredients", null);
-								FurnaceRecipe rcp = new FurnaceRecipe(new ItemStack(itemid, amount, itemdata), new MaterialData(ingredients.get(0), ingredients.get(0).byteValue()));
-								Bukkit.getServer().addRecipe(rcp);
-								log.info("[" + pdfile.getName() + "] " + "Added furnace recipe");
+								try {
+									Ingredient ingredient = new Ingredient(recipe.getString("ingredients", null));
+									FurnaceRecipe rcp = new FurnaceRecipe(new ItemStack(itemid, amount, itemdata), new MaterialData(ingredient.getMaterial(), ingredient.getDataByte()));
+									Bukkit.getServer().addRecipe(rcp);
+									log.info("[" + pdfile.getName() + "] " + "Added furnace recipe");
+								} catch (Exception e) {
+									log.warning("[" + pdfile.getName() + "] " + e.getMessage());
+								}
 							} else if (type.equalsIgnoreCase("shaped")) {
 							//	ShapedRecipe rcp = new ShapedRecipe(new ItemStack(itemid, amount, itemdata)).shape("abc", "def", "ghi");
 							//	for (Integer ingredient : ){
@@ -99,7 +103,7 @@ public class UltraItems extends JavaPlugin {
 					log.log(Level.SEVERE, "[" + pdfile.getName() + "] " + "NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
 					e.printStackTrace();
 				} catch (Exception e) {
-					if (e.getCause().getMessage() == "wrongitem" || e.getCause().getMessage() == "notitle" || e.getCause().getMessage() == "nourl") {
+					if (e.getCause() != null && (e.getCause().getMessage() == "wrongitem" || e.getCause().getMessage() == "notitle" || e.getCause().getMessage() == "nourl")) {
 						log.warning("[" + pdfile.getName() + "] " + e.getMessage());
 					} else {
 						e.printStackTrace();
