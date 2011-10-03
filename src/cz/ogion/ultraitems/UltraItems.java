@@ -130,7 +130,7 @@ public class UltraItems extends JavaPlugin {
 							rc.setIngredient(a, ingredient.getMaterial(), ingredient.getData());
 						} else {
 							ShapelessRecipe rc = (ShapelessRecipe) rcp;
-							rc.addIngredient(a, ingredient.getMaterial(), ingredient.getData());
+							rc.addIngredient(ingredient.getMaterial(), ingredient.getData());
 						}
 						curcol++;
 					}
