@@ -1,6 +1,5 @@
 package cz.ogion.ultraitems;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -9,9 +8,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -23,6 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.material.MaterialData;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.ConfigurationNode;
 import org.getspout.spoutapi.SpoutManager;
 
@@ -84,13 +83,30 @@ public class UltraItems extends JavaPlugin {
 									log.warning("[" + pdfile.getName() + "] " + e.getMessage());
 								}
 							} else if (type.equalsIgnoreCase("shaped")) {
-							//	ShapedRecipe rcp = new ShapedRecipe(new ItemStack(itemid, amount, itemdata)).shape("abc", "def", "ghi");
-							//	for (Integer ingredient : ){
-							//		rcp.setIngredient('a', new MaterialData(5).getItemType(), 1);
-							//	}
-							//	Bukkit.getServer().addRecipe(rcp);
+								ShapedRecipe rcp = new ShapedRecipe(new ItemStack(itemid, amount, itemdata)).shape("abc", "def", "ghi");
+								String ingredients = recipe.getString("ingredients", "");
+								Integer curline = 0;
+								Integer curcol = 0;
+								for (String line : ingredients.split("\\r?\\n")){
+									if (curline < 3) {
+										for (String ingredientitem : line.split(" ")){
+											if (curcol < 3) {
+												char a = (char) ('a' + curcol + curline * 3);
+												log.info("-"+a);
+												Ingredient ingredient = new Ingredient(ingredientitem);
+												rcp.setIngredient(a, ingredient.getMaterial(), ingredient.getData());
+												curcol++;
+											}
+										}
+										curcol = 0;
+									}
+									curline++;
+								}
+								Bukkit.getServer().addRecipe(rcp);
+								log.info("[" + pdfile.getName() + "] " + "Added shaped recipe");
 							} else if (type.equalsIgnoreCase("shapeless")) {
-							//	ShapelessRecipe rcp = new ShapelessRecipe(new ItemStack(itemid, amount, itemdata));
+								ShapelessRecipe rcp = new ShapelessRecipe(new ItemStack(itemid, amount, itemdata));
+								log.info("x"+rcp);
 							//	Bukkit.getServer().addRecipe(rcp);
 							} else {
 								log.warning("[" + pdfile.getName() + "] " + "You have to specify valid type of recipe (furnace, shaped, shapeless)");
