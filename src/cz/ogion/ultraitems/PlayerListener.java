@@ -40,6 +40,12 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 								is.setAmount(is.getAmount() - 1);
 							//	player.setItemInHand(is);
 							}
+							if (lclick.getInt("health", 0) != 0) {
+								player.setHealth(player.getHealth() + lclick.getInt("health", 0));
+							}
+							if (lclick.getInt("hunger", 0) != 0) {
+								player.setFoodLevel(player.getFoodLevel() + lclick.getInt("hunger", 0));
+							}
 							if (lclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, lclick.getString("sound"), false, player.getLocation());
 							}
@@ -51,6 +57,12 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 								ItemStack is = player.getItemInHand();
 								is.setAmount(is.getAmount() - 1);
 								player.setItemInHand(is);
+							}
+							if (rclick.getInt("health", 0) != 0) {
+								player.setHealth(player.getHealth() + rclick.getInt("health", 0));
+							}
+							if (rclick.getInt("hunger", 0) != 0) {
+								player.setFoodLevel(player.getFoodLevel() + rclick.getInt("hunger", 0));
 							}
 							if (rclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, rclick.getString("sound"), false, player.getLocation());
