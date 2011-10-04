@@ -86,9 +86,7 @@ public class UltraItems extends JavaPlugin {
 							Field field2 = net.minecraft.server.Item.class.getDeclaredField("maxStackSize");
 							field2.setAccessible(true);
 							field2.setInt(net.minecraft.server.Item.byId[itemid], maxstacksize);
-							log.info("xx");
 						}
-						log.info("xy");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -150,8 +148,11 @@ public class UltraItems extends JavaPlugin {
 						char a = (char) ('a' + curcol + curline * 3);
 						Ingredient ingredient = new Ingredient(ingredientitem);
 						curcol++;
-						if (Integer.decode(ingredientitem)==0) {
-							continue;
+						try{
+							if (Integer.decode(ingredientitem)==0) {
+								continue;
+							}
+						} catch (NumberFormatException e) {
 						}
 						if(rcp instanceof ShapedRecipe) {
 							ShapedRecipe rc = (ShapedRecipe) rcp;
