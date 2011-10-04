@@ -33,6 +33,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 					if(itemid != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
 						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
 							if (lclick.getString("action", null) != null) {
+								// TODO: permission bypass (http://dev.bukkit.org/server-mods/ultraitems/?comment=75)
 								player.chat(lclick.getString("action"));
 							}
 							if (lclick.getBoolean("consume", false)) {

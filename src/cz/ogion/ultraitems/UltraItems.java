@@ -65,10 +65,10 @@ public class UltraItems extends JavaPlugin {
 					} else if (title == null) {
 						throw new Exception("You have to specify item title", new Throwable("notitle"));
 					}
-					// SpoutManager.getFileManager().addToCache(this, url);
+					SpoutManager.getFileManager().addToCache(this, url);
 					SpoutManager.getItemManager().setItemTexture(material, itemdata, this, url);
 					SpoutManager.getItemManager().setItemName(material, itemdata, title);
-					
+					// TODO: block stackability
 					List<ConfigurationNode> recipes = item.getNodeList("recipes", null);
 					if (recipes != null) {
 						for (ConfigurationNode recipe : recipes) {
@@ -125,6 +125,10 @@ public class UltraItems extends JavaPlugin {
 					if (curcol < 3) {
 						char a = (char) ('a' + curcol + curline * 3);
 						Ingredient ingredient = new Ingredient(ingredientitem);
+						curcol++;
+						if (Integer.decode(ingredientitem)==0) {
+							continue;
+						}
 						if(rcp instanceof ShapedRecipe) {
 							ShapedRecipe rc = (ShapedRecipe) rcp;
 							rc.setIngredient(a, ingredient.getMaterial(), ingredient.getData());
@@ -132,7 +136,6 @@ public class UltraItems extends JavaPlugin {
 							ShapelessRecipe rc = (ShapelessRecipe) rcp;
 							rc.addIngredient(ingredient.getMaterial(), ingredient.getData());
 						}
-						curcol++;
 					}
 				}
 				curcol = 0;
