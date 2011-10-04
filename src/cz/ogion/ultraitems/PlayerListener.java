@@ -7,6 +7,7 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.util.config.ConfigurationNode;
 import org.getspout.spoutapi.SpoutManager;
 
@@ -33,8 +34,16 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 					if(itemid != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
 						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
 							if (lclick.getString("action", null) != null) {
-								// TODO: permission bypass (http://dev.bukkit.org/server-mods/ultraitems/?comment=75)
-								player.chat(lclick.getString("action"));
+								String permissionbypass = lclick.getString("permissionbypass", null);
+								if(permissionbypass != null){
+									PermissionAttachment attachment = player.addAttachment(plugin);
+									attachment.setPermission(permissionbypass, true);
+									player.chat(lclick.getString("action"));
+									attachment.unsetPermission(permissionbypass);
+									player.removeAttachment(attachment);
+								} else {
+									player.chat(lclick.getString("action"));
+								}
 							}
 							if (lclick.getBoolean("consume", false)) {
 								ItemStack is = player.getItemInHand();
@@ -52,7 +61,16 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							}
 						} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
 							if (rclick.getString("action", null) != null) {
-								player.chat(rclick.getString("action"));
+								String permissionbypass = rclick.getString("permissionbypass", null);
+								if(permissionbypass != null){
+									PermissionAttachment attachment = player.addAttachment(plugin);
+									attachment.setPermission(permissionbypass, true);
+									player.chat(rclick.getString("action"));
+									attachment.unsetPermission(permissionbypass);
+									player.removeAttachment(attachment);
+								} else {
+									player.chat(rclick.getString("action"));
+								}
 							}
 							if (rclick.getBoolean("consume", false)) {
 								ItemStack is = player.getItemInHand();
