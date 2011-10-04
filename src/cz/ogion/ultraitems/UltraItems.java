@@ -1,5 +1,6 @@
 package cz.ogion.ultraitems;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -42,6 +43,7 @@ public class UltraItems extends JavaPlugin {
 		entityListener = new EntityListener(this);
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Event.Priority.Normal, this);
+		new SpoutInventoryListener(this);
 		loadConfig();
 		log.info(pdfile.getFullName() + " was enabled");
 	}
@@ -68,7 +70,29 @@ public class UltraItems extends JavaPlugin {
 					SpoutManager.getFileManager().addToCache(this, url);
 					SpoutManager.getItemManager().setItemTexture(material, itemdata, this, url);
 					SpoutManager.getItemManager().setItemName(material, itemdata, title);
-					// TODO: block stackability
+					try {
+						Field field1 = net.minecraft.server.Item.class.getDeclaredField("bs");
+						if (field1.getType() == boolean.class) {
+							field1.setAccessible(true);
+							field1.setBoolean(net.minecraft.server.Item.byId[itemid], true);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					try {
+						Integer maxstacksize = item.getInt("maxstacksize", 0);
+						maxstacksize = (maxstacksize < 0 ? 0 : (maxstacksize > 64 ? 64 : maxstacksize));
+						if (maxstacksize != 0) {
+							Field field2 = net.minecraft.server.Item.class.getDeclaredField("maxStackSize");
+							field2.setAccessible(true);
+							field2.setInt(net.minecraft.server.Item.byId[itemid], maxstacksize);
+							log.info("xx");
+						}
+						log.info("xy");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					List<ConfigurationNode> recipes = item.getNodeList("recipes", null);
 					if (recipes != null) {
 						for (ConfigurationNode recipe : recipes) {
