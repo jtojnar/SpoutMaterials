@@ -13,7 +13,7 @@ public class Ingredient {
 	public Ingredient(String ingredient) throws Exception {
 		String[] item = null;
 		try {
-			item = ingredient.split(":");
+			item = ingredient.split("[:,;-]");
 			itemid = Integer.decode(item[0]);
 			itemdata = Integer.decode(item[1]);
 		} catch (Exception e) {

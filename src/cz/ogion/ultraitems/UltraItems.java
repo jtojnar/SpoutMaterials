@@ -123,7 +123,6 @@ public class UltraItems extends JavaPlugin {
 						}
 					}
 					// TODO: add to general
-					// TODO: crafting recipes
 				} catch (NoSuchMethodError e) {
 					log.log(Level.SEVERE, "[" + pdfile.getName() + "] " + "NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
 					e.printStackTrace();
@@ -143,6 +142,7 @@ public class UltraItems extends JavaPlugin {
 	private void doRecipe(Recipe rcp, String ingredients) throws Exception {
 		Integer curline = 0;
 		Integer curcol = 0;
+		ingredients = ingredients.replaceAll("\\s{2,}", " ");
 		for (String line : ingredients.split("\\r?\\n")){
 			if (curline < 3) {
 				for (String ingredientitem : line.split(" ")){
