@@ -45,6 +45,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 									player.chat(lclick.getString("action"));
 								}
 							}
+							// TODO: delay
 							if (lclick.getBoolean("consume", false)) {
 								ItemStack is = player.getItemInHand();
 								is.setAmount(is.getAmount() - 1);
@@ -59,6 +60,9 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							if (lclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, lclick.getString("sound"), false, player.getLocation());
 							}
+							event.setCancelled(true);
+							event.setUseInteractedBlock(Result.DENY);
+							event.setUseItemInHand(Result.DENY);
 						} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
 							if (rclick.getString("action", null) != null) {
 								String permissionbypass = rclick.getString("permissionbypass", null);

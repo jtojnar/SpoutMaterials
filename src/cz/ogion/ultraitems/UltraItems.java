@@ -49,6 +49,8 @@ public class UltraItems extends JavaPlugin {
 	}
 
 	// TODO: reset textures and titles
+	// TODO: value testing
+	// TODO: unit testing
 	public void loadConfig() {
 		getConfiguration().load();
 		config = this.getConfiguration().getNodes("UltraItems");
