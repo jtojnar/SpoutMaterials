@@ -18,7 +18,6 @@ public class EntityListener extends org.bukkit.event.entity.EntityListener {
 	public void onEntityDamage(EntityDamageEvent ev) {
 		if(ev instanceof EntityDamageByEntityEvent){
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) ev;
-			Integer damage = event.getDamage();
 			Entity damager = event.getDamager();
 			if (damager instanceof Player) {
 				config = plugin.config;
@@ -30,8 +29,8 @@ public class EntityListener extends org.bukkit.event.entity.EntityListener {
 						Integer itemid = item.getInt("item", 0);
 						Integer itemdata = item.getInt("data", 0);
 						if(itemid != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
-							Double damagemultiplyfier = item.getDouble("damage.entity", 1.0);
-							event.setDamage(((Long) Math.round(damagemultiplyfier * damage)).intValue());
+							Integer entitydamage = item.getInt("damage.entity", event.getDamage());
+							event.setDamage(entitydamage);
 						}
 					}
 				}
