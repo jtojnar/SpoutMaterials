@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.config.ConfigurationNode;
+import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.material.CustomItem;
 
 public class EntityListener extends org.bukkit.event.entity.EntityListener {
 	UltraItems plugin;
@@ -24,12 +26,10 @@ public class EntityListener extends org.bukkit.event.entity.EntityListener {
 				Player player = (Player) damager;
 				if (config != null && player.getItemInHand() != null) {
 					Integer eventitemid = player.getItemInHand().getTypeId();
-					Integer eventitemdata = ((Short) player.getItemInHand().getDurability()).intValue();
-					for(ConfigurationNode item : config.values()) {
-						Integer itemid = item.getInt("item", 0);
-						Integer itemdata = item.getInt("data", 0);
-						if(itemid != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
-							Integer entitydamage = item.getInt("damage.entity", event.getDamage());
+					for(Map.Entry<String, ConfigurationNode> item : config.entrySet()) {
+						CustomItem ci = plugin.items.get(item.getKey());
+						if(eventitemid != 0 && SpoutManager.getMaterialManager().isCustomItem(player.getItemInHand()) && SpoutManager.getMaterialManager().getCustomItem(player.getItemInHand()) == ci) {
+							Integer entitydamage = item.getValue().getInt("damage.entity", event.getDamage());
 							event.setDamage(entitydamage);
 						}
 					}

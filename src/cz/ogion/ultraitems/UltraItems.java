@@ -1,14 +1,15 @@
 package cz.ogion.ultraitems;
 
-import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -18,17 +19,20 @@ import org.bukkit.event.Event.Type;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.ConfigurationNode;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
+import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
+import org.getspout.spoutapi.material.CustomItem;
+import org.getspout.spoutapi.material.item.GenericCustomItem;
 
 public class UltraItems extends JavaPlugin {
 	public Map<String, ConfigurationNode> config;
+	public HashMap<String, CustomItem> items = new HashMap<String, CustomItem>();
 	Logger log = Logger.getLogger("Minecraft");
 	PluginDescriptionFile pdfile;
 	PlayerListener playerListener;
@@ -49,71 +53,46 @@ public class UltraItems extends JavaPlugin {
 	}
 
 	// TODO: reset textures and titles
-	// TODO: value testing
-	// TODO: unit testing
 	public void loadConfig() {
 		getConfiguration().load();
 		config = this.getConfiguration().getNodes("UltraItems");
 		if (config != null) {
-			for(ConfigurationNode item : config.values()) {
+			for(Entry<String, ConfigurationNode> item : config.entrySet()) {
 				try {
-					String url = item.getString("url", null);
-					Integer itemid = item.getInt("item", 0);
-					Short itemdata = ((Integer) item.getInt("data", 0)).shortValue();
-					String title = item.getString("title", null);
-					Material material = new MaterialData(itemid).getItemType();
+					String name = item.getKey();
+					String url = item.getValue().getString("url", null);
+					String title = item.getValue().getString("title", null);
 					if (url == null) {
-						throw new Exception("You have to specify item texture url", new Throwable("nourl"));
-					} else if (itemid == 0 || material == null) {
-						throw new Exception("You have to specify itemid (don't use 0 or non-existing item id)", new Throwable("wrongitem"));
+						throw new DataFormatException("You have to specify item texture url");
 					} else if (title == null) {
-						throw new Exception("You have to specify item title", new Throwable("notitle"));
+						throw new DataFormatException("You have to specify item title");
 					}
 					SpoutManager.getFileManager().addToCache(this, url);
-					SpoutManager.getItemManager().setItemTexture(material, itemdata, this, url);
-					SpoutManager.getItemManager().setItemName(material, itemdata, title);
-					try {
-						Field field1 = net.minecraft.server.Item.class.getDeclaredField("bs");
-						if (field1.getType() == boolean.class) {
-							field1.setAccessible(true);
-							field1.setBoolean(net.minecraft.server.Item.byId[itemid], true);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					try {
-						Integer maxstacksize = item.getInt("maxstacksize", 0);
-						maxstacksize = (maxstacksize < 0 ? 0 : (maxstacksize > 64 ? 64 : maxstacksize));
-						if (maxstacksize != 0) {
-							Field field2 = net.minecraft.server.Item.class.getDeclaredField("maxStackSize");
-							field2.setAccessible(true);
-							field2.setInt(net.minecraft.server.Item.byId[itemid], maxstacksize);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					GenericCustomItem ci = new GenericCustomItem(this, title, url);
+					items.put(name, ci);
+					// TODO: maxstacksize
 
-					List<ConfigurationNode> recipes = item.getNodeList("recipes", null);
+					List<ConfigurationNode> recipes = item.getValue().getNodeList("recipes", null);
 					if (recipes != null) {
 						for (ConfigurationNode recipe : recipes) {
 							String type = recipe.getString("type", "");
 							Integer amount = recipe.getInt("amount", 1);
 							if (type.equalsIgnoreCase("furnace")) {
 								try {
-									Ingredient ingredient = new Ingredient(recipe.getString("ingredients", null));
-									FurnaceRecipe rcp = new FurnaceRecipe(new ItemStack(itemid, amount, itemdata), new MaterialData(ingredient.getMaterial(), ingredient.getDataByte()));
+									Ingredient ingredient = new Ingredient(recipe.getString("ingredients", null), this);
+									FurnaceRecipe rcp = new FurnaceRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount), new MaterialData(ingredient.getOldMaterial(), ingredient.getDataByte()));
 									Bukkit.getServer().addRecipe(rcp);
 									log.info("[" + pdfile.getName() + "] " + "Added furnace recipe");
 								} catch (Exception e) {
 									log.warning("[" + pdfile.getName() + "] " + e.getMessage());
 								}
 							} else if (type.equalsIgnoreCase("shaped")) {
-								ShapedRecipe rcp = new ShapedRecipe(new ItemStack(itemid, amount, itemdata)).shape("abc", "def", "ghi");
+								SpoutShapedRecipe rcp = new SpoutShapedRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount)).shape("abc", "def", "ghi");
 								String ingredients = recipe.getString("ingredients", "");
 								doRecipe(rcp, ingredients);
 								log.info("[" + pdfile.getName() + "] " + "Added shaped recipe");
 							} else if (type.equalsIgnoreCase("shapeless")) {
-								ShapelessRecipe rcp = new ShapelessRecipe(new ItemStack(itemid, amount, itemdata));
+								SpoutShapelessRecipe rcp = new SpoutShapelessRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount));
 								String ingredients = recipe.getString("ingredients", "");
 								doRecipe(rcp, ingredients);
 								log.info("[" + pdfile.getName() + "] " + "Added shapeless recipe");
@@ -126,12 +105,10 @@ public class UltraItems extends JavaPlugin {
 				} catch (NoSuchMethodError e) {
 					log.log(Level.SEVERE, "[" + pdfile.getName() + "] " + "NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
 					e.printStackTrace();
+				} catch (DataFormatException e) {
+					log.warning("[" + pdfile.getName() + "] " + e.getMessage());
 				} catch (Exception e) {
-					if (e.getCause() != null && (e.getCause().getMessage() == "wrongitem" || e.getCause().getMessage() == "notitle" || e.getCause().getMessage() == "nourl")) {
-						log.warning("[" + pdfile.getName() + "] " + e.getMessage());
-					} else {
-						e.printStackTrace();
-					}
+					e.printStackTrace();
 				}
 			}
 		} else {
@@ -148,20 +125,19 @@ public class UltraItems extends JavaPlugin {
 				for (String ingredientitem : line.split(" ")){
 					if (curcol < 3) {
 						char a = (char) ('a' + curcol + curline * 3);
-						Ingredient ingredient = new Ingredient(ingredientitem);
+						Ingredient ingredient = new Ingredient(ingredientitem, this);
 						curcol++;
 						try{
 							if (Integer.decode(ingredientitem)==0) {
 								continue;
 							}
 						} catch (NumberFormatException e) {
+							
 						}
-						if(rcp instanceof ShapedRecipe) {
-							ShapedRecipe rc = (ShapedRecipe) rcp;
-							rc.setIngredient(a, ingredient.getMaterial(), ingredient.getData());
+						if(rcp instanceof SpoutShapedRecipe) {
+							((SpoutShapedRecipe) rcp).setIngredient(a, ingredient.getMaterial());
 						} else {
-							ShapelessRecipe rc = (ShapelessRecipe) rcp;
-							rc.addIngredient(ingredient.getMaterial(), ingredient.getData());
+							((SpoutShapelessRecipe) rcp).addIngredient(ingredient.getMaterial());
 						}
 					}
 				}
@@ -169,7 +145,7 @@ public class UltraItems extends JavaPlugin {
 			}
 			curline++;
 		}
-		Bukkit.getServer().addRecipe(rcp);
+		SpoutManager.getMaterialManager().registerSpoutRecipe(rcp);
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -203,23 +179,19 @@ public class UltraItems extends JavaPlugin {
 						if (who.hasPermission("ultraitems.give")){
 							if (who.hasPermission("ultraitems.give.*") || who.hasPermission("ultraitems.give."+args[0])){
 								try {
-									ConfigurationNode item = config.get(args[0]);
-									Integer itemid = item.getInt("item", 0);
-									Short itemdata = ((Integer)item.getInt("data", 0)).shortValue();
-									if(itemid != 0) {
-										ItemStack stack = new ItemStack(itemid, 1, itemdata);
-										int slot = who.getInventory().firstEmpty();
-										if(slot < 0) {
-											who.getWorld().dropItem(who.getLocation(), stack);
-										} else {
-											who.getInventory().addItem(stack);
-										}
-										sender.sendMessage(ChatColor.GREEN + "Here you are!");
+									CustomItem ci = items.get(args[0]);
+									ItemStack stack = SpoutManager.getMaterialManager().getCustomItemStack(ci, 1);
+									int slot = who.getInventory().firstEmpty();
+									if(slot < 0) {
+										who.getWorld().dropItem(who.getLocation(), stack);
 									} else {
-										sender.sendMessage(ChatColor.RED + args[0]+" has incorrectly set data! Please contact server admin.");
+										who.getInventory().addItem(stack);
 									}
+									sender.sendMessage(ChatColor.GREEN + "Here you are!");
 								} catch (Exception e) {
 									sender.sendMessage(ChatColor.RED + "Error:"+e.getMessage());
+									e.printStackTrace()
+									;
 								}
 							} else {
 								sender.sendMessage(ChatColor.RED + "You don't have permission to get " + args[0] + ".");

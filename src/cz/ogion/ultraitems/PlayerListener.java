@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.util.config.ConfigurationNode;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.material.CustomItem;
 
 public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	UltraItems plugin;
@@ -25,13 +26,11 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 				Action action = event.getAction();
 				Player player = event.getPlayer();
 				Integer eventitemid = event.getItem().getTypeId();
-				Integer eventitemdata = ((Short) event.getItem().getDurability()).intValue();
-				for(ConfigurationNode item : config.values()) {
-					Integer itemid = item.getInt("item", 0);
-					Integer itemdata = item.getInt("data", 0);
-					ConfigurationNode lclick = item.getNode("lclick");
-					ConfigurationNode rclick = item.getNode("rclick");
-					if(itemid != 0 && itemid.equals(eventitemid) && itemdata.equals(eventitemdata)) {
+				for(Map.Entry<String, ConfigurationNode> item : config.entrySet()) {
+					CustomItem ci = plugin.items.get(item.getKey());
+					ConfigurationNode lclick = item.getValue().getNode("lclick");
+					ConfigurationNode rclick = item.getValue().getNode("rclick");
+					if(eventitemid != 0 && SpoutManager.getMaterialManager().isCustomItem(event.getItem()) && SpoutManager.getMaterialManager().getCustomItem(event.getItem()) == ci) {
 						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
 							if (lclick.getString("action", null) != null) {
 								String permissionbypass = lclick.getString("permissionbypass", null);

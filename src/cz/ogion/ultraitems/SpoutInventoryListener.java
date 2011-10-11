@@ -21,6 +21,7 @@ public class SpoutInventoryListener extends InventoryListener {
 		ItemStack clicked = event.getItem();
 		ItemStack holding = event.getCursor();
 		if(config != null) {
+			// TODO: enhance maxstacksize
 			for (ConfigurationNode item : config.values()) {
 				Integer itemid = item.getInt("item", 0);
 				Integer maxstacksize = item.getInt("maxstacksize", 0);
@@ -35,4 +36,6 @@ public class SpoutInventoryListener extends InventoryListener {
 			}
 		}
 	}
+	// TODO: craftiong sound
+	// TODO: burning time
 }
