@@ -105,6 +105,7 @@ public class UltraItems extends JavaPlugin {
 							}
 						}
 					}
+					log.info("[" + pdfile.getName() + "] " + "Added item "+name+" ("+ci.getRawId()+":"+ci.getRawData()+")");
 					// TODO: add to general
 				} catch (NoSuchMethodError e) {
 					log.log(Level.SEVERE, "[" + pdfile.getName() + "] " + "NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
@@ -210,7 +211,6 @@ public class UltraItems extends JavaPlugin {
 									who.getInventory().addItem(SpoutManager.getMaterialManager().getCustomItemStack(this.items.get(name), a));
 								}
 							} catch (Exception e) {
-								e.printStackTrace();
 							}
 						}
 						sender.sendMessage("UltraItems: " + ChatColor.YELLOW + "Items from your inventory were replaced");
