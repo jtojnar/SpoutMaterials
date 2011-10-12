@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Type;
@@ -23,7 +24,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.ConfigurationNode;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
@@ -31,7 +31,7 @@ import org.getspout.spoutapi.material.CustomItem;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 
 public class UltraItems extends JavaPlugin {
-	public Map<String, ConfigurationNode> config;
+	public ConfigurationSection config;
 	public HashMap<String, CustomItem> items = new HashMap<String, CustomItem>();
 	Logger log = Logger.getLogger("Minecraft");
 	PluginDescriptionFile pdfile;
@@ -53,15 +53,16 @@ public class UltraItems extends JavaPlugin {
 	}
 
 	// TODO: reset textures and titles
+	@SuppressWarnings("unchecked")
 	public void loadConfig() {
-		getConfiguration().load();
-		config = this.getConfiguration().getNodes("UltraItems");
+		config = this.getConfig().getConfigurationSection("UltraItems");
 		if (config != null) {
-			for(Entry<String, ConfigurationNode> item : config.entrySet()) {
+			for(Entry<String, Object> item : config.getValues(false).entrySet()) {
 				try {
+					ConfigurationSection value = (ConfigurationSection) item.getValue();
 					String name = item.getKey();
-					String url = item.getValue().getString("url", null);
-					String title = item.getValue().getString("title", null);
+					String url = value.getString("url", null);
+					String title = value.getString("title", null);
 					if (url == null) {
 						throw new DataFormatException("You have to specify item texture url");
 					} else if (title == null) {
@@ -72,14 +73,17 @@ public class UltraItems extends JavaPlugin {
 					items.put(name, ci);
 					// TODO: maxstacksize
 
-					List<ConfigurationNode> recipes = item.getValue().getNodeList("recipes", null);
+					List<Map<String, Object>> recipes = value.getList("recipes");
 					if (recipes != null) {
-						for (ConfigurationNode recipe : recipes) {
-							String type = recipe.getString("type", "");
-							Integer amount = recipe.getInt("amount", 1);
+						for (Map<String, Object> recipe : recipes) {
+							String type = (String) recipe.get("type");
+							Integer amount = (Integer) recipe.get("amount");
+							if (amount == null) {
+								amount = 1;
+							}
 							if (type.equalsIgnoreCase("furnace")) {
 								try {
-									Ingredient ingredient = new Ingredient(recipe.getString("ingredients", null), this);
+									Ingredient ingredient = new Ingredient((String) recipe.get("ingredients"), this);
 									FurnaceRecipe rcp = new FurnaceRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount), new MaterialData(ingredient.getOldMaterial(), ingredient.getDataByte()));
 									Bukkit.getServer().addRecipe(rcp);
 									log.info("[" + pdfile.getName() + "] " + "Added furnace recipe");
@@ -88,12 +92,12 @@ public class UltraItems extends JavaPlugin {
 								}
 							} else if (type.equalsIgnoreCase("shaped")) {
 								SpoutShapedRecipe rcp = new SpoutShapedRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount)).shape("abc", "def", "ghi");
-								String ingredients = recipe.getString("ingredients", "");
+								String ingredients = (String) recipe.get("ingredients");
 								doRecipe(rcp, ingredients);
 								log.info("[" + pdfile.getName() + "] " + "Added shaped recipe");
 							} else if (type.equalsIgnoreCase("shapeless")) {
 								SpoutShapelessRecipe rcp = new SpoutShapelessRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount));
-								String ingredients = recipe.getString("ingredients", "");
+								String ingredients = (String) recipe.get("ingredients");
 								doRecipe(rcp, ingredients);
 								log.info("[" + pdfile.getName() + "] " + "Added shapeless recipe");
 							} else {
@@ -112,8 +116,8 @@ public class UltraItems extends JavaPlugin {
 				}
 			}
 		} else {
-			this.getConfiguration().setProperty("UltraItems", null);
-			getConfiguration().save();
+			getConfig().createSection("UltraItems:");
+			saveConfig();
 		}
 	}
 	private void doRecipe(Recipe rcp, String ingredients) throws Exception {
@@ -162,7 +166,7 @@ public class UltraItems extends JavaPlugin {
 				} else if(args[0].equalsIgnoreCase("list")) {
 					if(sender.hasPermission("ultraitems.list")) {
 						StringBuilder sb = new StringBuilder();
-						for(String s : config.keySet()) {
+						for(String s : config.getKeys(false)) {
 							sb.append(s);
 							sb.append(" ");
 						}
@@ -171,7 +175,7 @@ public class UltraItems extends JavaPlugin {
 						sender.sendMessage(ChatColor.RED + "You don't have permission for list of ultra items.");
 					}
 					return true;
-				} else if(config.containsKey(args[0])) {
+				} else if(config.contains(args[0])) {
 					if (sender instanceof ConsoleCommandSender){
 						sender.sendMessage(ChatColor.RED + "This command must be run in-game.");
 					} else {

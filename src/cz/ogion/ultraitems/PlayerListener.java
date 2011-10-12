@@ -1,20 +1,20 @@
 package cz.ogion.ultraitems;
 
-import java.util.Map;
+import java.util.Map.Entry;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.util.config.ConfigurationNode;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.CustomItem;
 
 public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	UltraItems plugin;
-	Map<String, ConfigurationNode> config;
+	ConfigurationSection config;
 
 	public PlayerListener(UltraItems instance) {
 		plugin = instance;
@@ -26,10 +26,11 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 				Action action = event.getAction();
 				Player player = event.getPlayer();
 				Integer eventitemid = event.getItem().getTypeId();
-				for(Map.Entry<String, ConfigurationNode> item : config.entrySet()) {
+				for(Entry<String, Object> item : config.getValues(false).entrySet()) {
+					ConfigurationSection value = (ConfigurationSection) item.getValue();
 					CustomItem ci = plugin.items.get(item.getKey());
-					ConfigurationNode lclick = item.getValue().getNode("lclick");
-					ConfigurationNode rclick = item.getValue().getNode("rclick");
+					ConfigurationSection lclick = value.getConfigurationSection("lclick");
+					ConfigurationSection rclick = value.getConfigurationSection("rclick");
 					if(eventitemid != 0 && SpoutManager.getMaterialManager().isCustomItem(event.getItem()) && SpoutManager.getMaterialManager().getCustomItem(event.getItem()) == ci) {
 						if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
 							if (lclick.getString("action", null) != null) {

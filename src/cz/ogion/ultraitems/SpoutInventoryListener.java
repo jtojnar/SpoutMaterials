@@ -1,16 +1,14 @@
 package cz.ogion.ultraitems;
 
-import java.util.Map;
-
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.config.ConfigurationNode;
 import org.getspout.spoutapi.event.inventory.InventoryClickEvent;
 import org.getspout.spoutapi.event.inventory.InventoryListener;
 
 public class SpoutInventoryListener extends InventoryListener {
 	UltraItems plugin;
-	Map<String, ConfigurationNode> config;
+	ConfigurationSection config;
 
 	public SpoutInventoryListener(UltraItems instance) {
 		plugin = instance;
@@ -22,7 +20,8 @@ public class SpoutInventoryListener extends InventoryListener {
 		ItemStack holding = event.getCursor();
 		if(config != null) {
 			// TODO: enhance maxstacksize
-			for (ConfigurationNode item : config.values()) {
+			for (Object it : config.getValues(false).values()) {
+				ConfigurationSection item = (ConfigurationSection) it;
 				Integer itemid = item.getInt("item", 0);
 				Integer maxstacksize = item.getInt("maxstacksize", 0);
 				if (clicked != null && holding != null && itemid != 0 && holding.getType() == clicked.getType() && clicked.getType().getId() == itemid) {
@@ -36,6 +35,6 @@ public class SpoutInventoryListener extends InventoryListener {
 			}
 		}
 	}
-	// TODO: craftiong sound
+	// TODO: crafting sound
 	// TODO: burning time
 }
