@@ -136,7 +136,7 @@ public class UltraItems extends JavaPlugin {
 								continue;
 							}
 						} catch (NumberFormatException e) {
-							
+
 						}
 						if(rcp instanceof SpoutShapedRecipe) {
 							((SpoutShapedRecipe) rcp).setIngredient(a, ingredient.getMaterial());
@@ -175,6 +175,47 @@ public class UltraItems extends JavaPlugin {
 						sender.sendMessage(ChatColor.RED + "You don't have permission for list of ultra items.");
 					}
 					return true;
+				} else if(args[0].equalsIgnoreCase("replace")) {
+					if (sender instanceof ConsoleCommandSender){
+						sender.sendMessage(ChatColor.RED + "This command must be run in-game.");
+					}  else {
+						Player who = (Player) sender;
+						for(Entry<String, Object> item : config.getValues(false).entrySet()) {
+							try {
+								String name = item.getKey();
+								ConfigurationSection value = (ConfigurationSection) item.getValue();
+								Integer itemid = value.getInt("itemid", 0);
+								Integer data = value.getInt("data", 0);
+								Integer amount = 0;
+								if (itemid == 0 || data == 0) {
+									throw new Exception("");
+								}
+								Map<Integer, ? extends ItemStack> iitems = who.getInventory().all(itemid);
+								for (int i : iitems.keySet()) {
+									ItemStack is = iitems.get(i);
+									if (itemid == is.getTypeId() && ((Short) is.getDurability()).intValue() == data) {
+										log.info("net");
+										amount += is.getAmount();
+										who.getInventory().setItem(i, null);
+									}
+								}
+								while (amount > 0) {
+									int a = 0;
+									if (amount >= 64) {
+										a = 64;
+									} else {
+										a = amount;
+									}
+									amount -= a;
+									who.getInventory().addItem(SpoutManager.getMaterialManager().getCustomItemStack(this.items.get(name), a));
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						sender.sendMessage("UltraItems: " + ChatColor.YELLOW + "Items from your inventory were replaced");
+					}
+					return true;
 				} else if(config.contains(args[0])) {
 					if (sender instanceof ConsoleCommandSender){
 						sender.sendMessage(ChatColor.RED + "This command must be run in-game.");
@@ -194,8 +235,7 @@ public class UltraItems extends JavaPlugin {
 									sender.sendMessage(ChatColor.GREEN + "Here you are!");
 								} catch (Exception e) {
 									sender.sendMessage(ChatColor.RED + "Error:"+e.getMessage());
-									e.printStackTrace()
-									;
+									e.printStackTrace();
 								}
 							} else {
 								sender.sendMessage(ChatColor.RED + "You don't have permission to get " + args[0] + ".");
