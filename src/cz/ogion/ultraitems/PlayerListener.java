@@ -59,13 +59,31 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							}
 							if (lclick.getInt("health", 0) != 0) {
 								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, lclick.getInt("health", 0), RegainReason.EATING);
+								Integer newhealth = player.getHealth() + regainevent.getAmount();
+								if (newhealth < 0) {
+									newhealth = 0;
+								} else if (newhealth > 20) {
+									newhealth = 20;
+								}
+								regainevent.setAmount(newhealth - player.getHealth());
 								Bukkit.getServer().getPluginManager().callEvent(regainevent);
-								player.setHealth(player.getHealth() + regainevent.getAmount());
+								if (!regainevent.isCancelled()) {
+									player.setHealth(newhealth);
+								}
 							}
 							if (lclick.getInt("hunger", 0) != 0) {
-								FoodLevelChangeEvent regainevent = new FoodLevelChangeEvent(player, lclick.getInt("hunger", 0));
-								Bukkit.getServer().getPluginManager().callEvent(regainevent);
-								player.setFoodLevel(player.getFoodLevel() + regainevent.getFoodLevel());
+								FoodLevelChangeEvent flchangeevent = new FoodLevelChangeEvent(player, lclick.getInt("hunger", 0));
+								Integer newhunger = player.getFoodLevel() + flchangeevent.getFoodLevel();
+								if (newhunger < 0) {
+									newhunger = 0;
+								} else if (newhunger> 20) {
+									newhunger = 20;
+								}
+								flchangeevent.setFoodLevel(newhunger - player.getFoodLevel());
+								Bukkit.getServer().getPluginManager().callEvent(flchangeevent);
+								if (!flchangeevent.isCancelled()) {
+									player.setFoodLevel(newhunger);
+								}
 							}
 							if (lclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, lclick.getString("sound"), false, player.getLocation());
@@ -93,13 +111,31 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							}
 							if (rclick.getInt("health", 0) != 0) {
 								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, rclick.getInt("health", 0), RegainReason.EATING);
+								Integer newhealth = player.getHealth() + regainevent.getAmount();
+								if (newhealth < 0) {
+									newhealth = 0;
+								} else if (newhealth > 20) {
+									newhealth = 20;
+								}
+								regainevent.setAmount(newhealth - player.getHealth());
 								Bukkit.getServer().getPluginManager().callEvent(regainevent);
-								player.setHealth(player.getHealth() + regainevent.getAmount());
+								if (!regainevent.isCancelled()) {
+									player.setHealth(newhealth);
+								}
 							}
 							if (rclick.getInt("hunger", 0) != 0) {
-								FoodLevelChangeEvent regainevent = new FoodLevelChangeEvent(player, rclick.getInt("hunger", 0));
-								Bukkit.getServer().getPluginManager().callEvent(regainevent);
-								player.setFoodLevel(player.getFoodLevel() + regainevent.getFoodLevel());
+								FoodLevelChangeEvent flchangeevent = new FoodLevelChangeEvent(player, rclick.getInt("hunger", 0));
+								Integer newhunger = player.getFoodLevel() + flchangeevent.getFoodLevel();
+								if (newhunger < 0) {
+									newhunger = 0;
+								} else if (newhunger> 20) {
+									newhunger = 20;
+								}
+								flchangeevent.setFoodLevel(newhunger - player.getFoodLevel());
+								Bukkit.getServer().getPluginManager().callEvent(flchangeevent);
+								if (!flchangeevent.isCancelled()) {
+									player.setFoodLevel(newhunger);
+								}
 							}
 							if (rclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, rclick.getString("sound"), false, player.getLocation());
