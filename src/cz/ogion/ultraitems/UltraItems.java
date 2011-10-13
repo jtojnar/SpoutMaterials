@@ -195,7 +195,6 @@ public class UltraItems extends JavaPlugin {
 								for (int i : iitems.keySet()) {
 									ItemStack is = iitems.get(i);
 									if (itemid == is.getTypeId() && ((Short) is.getDurability()).intValue() == data) {
-										log.info("net");
 										amount += is.getAmount();
 										who.getInventory().setItem(i, null);
 									}

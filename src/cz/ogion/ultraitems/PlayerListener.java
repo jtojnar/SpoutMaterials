@@ -1,11 +1,16 @@
 package cz.ogion.ultraitems;
 
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
@@ -15,6 +20,7 @@ import org.getspout.spoutapi.material.CustomItem;
 public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	UltraItems plugin;
 	ConfigurationSection config;
+	Logger log = Logger.getLogger("Minecraft");
 
 	public PlayerListener(UltraItems instance) {
 		plugin = instance;
@@ -52,10 +58,14 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							//	player.setItemInHand(is);
 							}
 							if (lclick.getInt("health", 0) != 0) {
-								player.setHealth(player.getHealth() + lclick.getInt("health", 0));
+								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, lclick.getInt("health", 0), RegainReason.EATING);
+								Bukkit.getServer().getPluginManager().callEvent(regainevent);
+								player.setHealth(player.getHealth() + regainevent.getAmount());
 							}
 							if (lclick.getInt("hunger", 0) != 0) {
-								player.setFoodLevel(player.getFoodLevel() + lclick.getInt("hunger", 0));
+								FoodLevelChangeEvent regainevent = new FoodLevelChangeEvent(player, lclick.getInt("hunger", 0));
+								Bukkit.getServer().getPluginManager().callEvent(regainevent);
+								player.setFoodLevel(player.getFoodLevel() + regainevent.getFoodLevel());
 							}
 							if (lclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, lclick.getString("sound"), false, player.getLocation());
@@ -82,10 +92,14 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 								player.setItemInHand(is);
 							}
 							if (rclick.getInt("health", 0) != 0) {
-								player.setHealth(player.getHealth() + rclick.getInt("health", 0));
+								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, rclick.getInt("health", 0), RegainReason.EATING);
+								Bukkit.getServer().getPluginManager().callEvent(regainevent);
+								player.setHealth(player.getHealth() + regainevent.getAmount());
 							}
 							if (rclick.getInt("hunger", 0) != 0) {
-								player.setFoodLevel(player.getFoodLevel() + rclick.getInt("hunger", 0));
+								FoodLevelChangeEvent regainevent = new FoodLevelChangeEvent(player, rclick.getInt("hunger", 0));
+								Bukkit.getServer().getPluginManager().callEvent(regainevent);
+								player.setFoodLevel(player.getFoodLevel() + regainevent.getFoodLevel());
 							}
 							if (rclick.getString("sound", null) != null){
 								SpoutManager.getSoundManager().playGlobalCustomSoundEffect(plugin, rclick.getString("sound"), false, player.getLocation());
