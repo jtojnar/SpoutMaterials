@@ -38,8 +38,10 @@ public class UltraItems extends JavaPlugin {
 	PlayerListener playerListener;
 	EntityListener entityListener;
 
+	@Override
 	public void onDisable() {}
 
+	@Override
 	public void onEnable() {
 		PluginManager pm = getServer().getPluginManager();
 		pdfile = this.getDescription();
@@ -154,6 +156,7 @@ public class UltraItems extends JavaPlugin {
 		SpoutManager.getMaterialManager().registerSpoutRecipe(rcp);
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("ultraitems")){
 			if(args.length == 1) {

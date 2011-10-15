@@ -25,6 +25,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	public PlayerListener(UltraItems instance) {
 		plugin = instance;
 	}
+	@Override
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		config = plugin.config;
 		if(event.hasItem()){

@@ -14,6 +14,7 @@ public class SpoutInventoryListener extends InventoryListener {
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, this, Event.Priority.Monitor, plugin);
 	}
+	@Override
 	public void onInventoryClick(InventoryClickEvent event) {
 		config = plugin.config;
 		ItemStack clicked = event.getItem();

@@ -17,6 +17,7 @@ public class EntityListener extends org.bukkit.event.entity.EntityListener {
 	public EntityListener(UltraItems instance) {
 		plugin = instance;
 	}
+	@Override
 	public void onEntityDamage(EntityDamageEvent ev) {
 		if(ev instanceof EntityDamageByEntityEvent){
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) ev;
