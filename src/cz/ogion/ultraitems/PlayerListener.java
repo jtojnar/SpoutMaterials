@@ -58,7 +58,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							//	player.setItemInHand(is);
 							}
 							if (lclick.getInt("health", 0) != 0) {
-								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, lclick.getInt("health", 0), RegainReason.EATING);
+								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, lclick.getInt("health", 0), RegainReason.CUSTOM);
 								Integer newhealth = player.getHealth() + regainevent.getAmount();
 								if (newhealth < 0) {
 									newhealth = 0;
@@ -110,7 +110,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 								player.setItemInHand(is);
 							}
 							if (rclick.getInt("health", 0) != 0) {
-								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, rclick.getInt("health", 0), RegainReason.EATING);
+								EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, rclick.getInt("health", 0), RegainReason.CUSTOM);
 								Integer newhealth = player.getHealth() + regainevent.getAmount();
 								if (newhealth < 0) {
 									newhealth = 0;

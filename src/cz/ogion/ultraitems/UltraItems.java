@@ -56,6 +56,7 @@ public class UltraItems extends JavaPlugin {
 	@SuppressWarnings("unchecked")
 	public void loadConfig() {
 		config = this.getConfig().getConfigurationSection("UltraItems");
+		// TODO: empty config
 		if (config != null) {
 			for(Entry<String, Object> item : config.getValues(false).entrySet()) {
 				try {
