@@ -37,6 +37,7 @@ public class UltraItems extends JavaPlugin {
 	PluginDescriptionFile pdfile;
 	PlayerListener playerListener;
 	EntityListener entityListener;
+	BlockListener blockListener;
 
 	@Override
 	public void onDisable() {}
@@ -47,8 +48,10 @@ public class UltraItems extends JavaPlugin {
 		pdfile = this.getDescription();
 		playerListener = new PlayerListener(this);
 		entityListener = new EntityListener(this);
+		blockListener = new BlockListener(this);
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Event.Priority.Normal, this);
+		pm.registerEvent(Type.BLOCK_DAMAGE, this.entityListener, Event.Priority.Normal, this);
 		new SpoutInventoryListener(this);
 		loadConfig();
 		log.info(pdfile.getFullName() + " was enabled");
