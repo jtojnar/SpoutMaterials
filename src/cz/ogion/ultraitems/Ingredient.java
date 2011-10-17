@@ -30,9 +30,8 @@ public class Ingredient {
 				}
 			}
 		} catch (Exception e) {
-			if (plugin.items.containsKey(item[0])) {
-				material = plugin.items.get(item[0]);
-			} else {
+			material = plugin.itemManager.getItem(item[0]).getCustomItem();
+			if (material == null) {
 				throw new DataFormatException("Your ingredient is in wrong format: " + ingredient);
 			}
 		}

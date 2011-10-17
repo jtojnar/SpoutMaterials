@@ -29,7 +29,7 @@ public class EntityListener extends org.bukkit.event.entity.EntityListener {
 					Integer eventitemid = player.getItemInHand().getTypeId();
 					for(Entry<String, Object> item : config.getValues(false).entrySet()) {
 						ConfigurationSection value = (ConfigurationSection) item.getValue();
-						CustomItem ci = plugin.items.get(item.getKey());
+						CustomItem ci = plugin.itemManager.getItem(item.getKey()).getCustomItem();
 						if(eventitemid != 0 && SpoutManager.getMaterialManager().isCustomItem(player.getItemInHand()) && SpoutManager.getMaterialManager().getCustomItem(player.getItemInHand()) == ci) {
 							Integer entitydamage = value.getInt("damage.entity", event.getDamage());
 							event.setDamage(entitydamage);
