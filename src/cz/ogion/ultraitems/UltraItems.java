@@ -1,6 +1,5 @@
 package cz.ogion.ultraitems;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,16 +27,15 @@ import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
 import org.getspout.spoutapi.material.CustomItem;
-import org.getspout.spoutapi.material.item.GenericCustomItem;
 
 public class UltraItems extends JavaPlugin {
 	public ConfigurationSection config;
-	public HashMap<String, CustomItem> items = new HashMap<String, CustomItem>();
 	Logger log = Logger.getLogger("Minecraft");
-	PluginDescriptionFile pdfile;
+	private PluginDescriptionFile pdfile;
 	PlayerListener playerListener;
 	EntityListener entityListener;
 	BlockListener blockListener;
+	ItemManager itemManager;
 
 	@Override
 	public void onDisable() {}
@@ -49,6 +47,7 @@ public class UltraItems extends JavaPlugin {
 		playerListener = new PlayerListener(this);
 		entityListener = new EntityListener(this);
 		blockListener = new BlockListener(this);
+		itemManager = new ItemManager(this);
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Event.Priority.Normal, this);
 		pm.registerEvent(Type.BLOCK_DAMAGE, this.entityListener, Event.Priority.Normal, this);
@@ -69,15 +68,8 @@ public class UltraItems extends JavaPlugin {
 					String name = item.getKey();
 					String url = value.getString("url", null);
 					String title = value.getString("title", null);
-					if (url == null) {
-						throw new DataFormatException("You have to specify item texture url");
-					} else if (title == null) {
-						throw new DataFormatException("You have to specify item title");
-					}
-					SpoutManager.getFileManager().addToCache(this, url);
-					GenericCustomItem ci = new GenericCustomItem(this, title, url);
-					items.put(name, ci);
-					// TODO: maxstacksize
+					itemManager.addItem(ItemType.GENERIC_ITEM, name, title, url);
+					CustomItem ci = itemManager.getItem(name).getCustomItem();
 
 					List<Map<String, Object>> recipes = value.getList("recipes");
 					if (recipes != null) {
@@ -214,7 +206,7 @@ public class UltraItems extends JavaPlugin {
 										a = amount;
 									}
 									amount -= a;
-									who.getInventory().addItem(SpoutManager.getMaterialManager().getCustomItemStack(this.items.get(name), a));
+									who.getInventory().addItem(SpoutManager.getMaterialManager().getCustomItemStack(itemManager.getItem(name).getCustomItem(), a));
 								}
 							} catch (Exception e) {
 							}
@@ -230,7 +222,7 @@ public class UltraItems extends JavaPlugin {
 						if (who.hasPermission("ultraitems.give")){
 							if (who.hasPermission("ultraitems.give.*") || who.hasPermission("ultraitems.give."+args[0])){
 								try {
-									CustomItem ci = items.get(args[0]);
+									CustomItem ci = itemManager.getItem(args[0]).getCustomItem();
 									ItemStack stack = SpoutManager.getMaterialManager().getCustomItemStack(ci, 1);
 									int slot = who.getInventory().firstEmpty();
 									if(slot < 0) {

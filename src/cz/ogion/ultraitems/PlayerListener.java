@@ -35,7 +35,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 				Integer eventitemid = event.getItem().getTypeId();
 				for(Entry<String, Object> item : config.getValues(false).entrySet()) {
 					ConfigurationSection value = (ConfigurationSection) item.getValue();
-					CustomItem ci = plugin.items.get(item.getKey());
+					CustomItem ci = plugin.itemManager.getItem(item.getKey()).getCustomItem();
 					ConfigurationSection lclick = value.getConfigurationSection("lclick");
 					ConfigurationSection rclick = value.getConfigurationSection("rclick");
 					if(eventitemid != 0 && SpoutManager.getMaterialManager().isCustomItem(event.getItem()) && SpoutManager.getMaterialManager().getCustomItem(event.getItem()) == ci) {
