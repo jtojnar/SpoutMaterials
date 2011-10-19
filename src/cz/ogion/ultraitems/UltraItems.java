@@ -50,7 +50,7 @@ public class UltraItems extends JavaPlugin {
 		itemManager = new ItemManager(this);
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Event.Priority.Normal, this);
-		pm.registerEvent(Type.BLOCK_DAMAGE, this.entityListener, Event.Priority.Normal, this);
+		pm.registerEvent(Type.BLOCK_DAMAGE, this.blockListener, Event.Priority.Normal, this);
 		new SpoutInventoryListener(this);
 		loadConfig();
 		log.info(pdfile.getFullName() + " was enabled");
@@ -68,8 +68,7 @@ public class UltraItems extends JavaPlugin {
 					String name = item.getKey();
 					String url = value.getString("url", null);
 					String title = value.getString("title", null);
-					itemManager.addItem(ItemType.GENERIC_ITEM, name, title, url);
-					CustomItem ci = itemManager.getItem(name).getCustomItem();
+					CustomItem ci = itemManager.addItem(ItemType.GENERIC_ITEM, name, title, url).setConfig(value).getCustomItem();
 
 					List<Map<String, Object>> recipes = value.getList("recipes");
 					if (recipes != null) {
