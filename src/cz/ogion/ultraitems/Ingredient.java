@@ -1,21 +1,19 @@
 package cz.ogion.ultraitems;
 
-import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
-import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.material.Material;
-import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.material.MaterialData;
 
 public class Ingredient {
-	Integer itemid = 0;
-	Integer itemdata = 0;
-	Integer amount = 0;
-	Material material;
-	UltraItems plugin;
-	Logger log = Logger.getLogger("Minecraft");
+	private Integer itemid = 0;
+	private Integer itemdata = 0;
+	private Integer amount = 1;
+	private Material material;
+	private UltraItems plugin;
+	private String ingredient;
 	public Ingredient(String ingredient, UltraItems instance) throws Exception {
+		this.ingredient = ingredient;
 		plugin = instance;
 		String[] item = null;
 		try {
@@ -29,27 +27,25 @@ public class Ingredient {
 					}
 				}
 			}
+			material = MaterialData.getMaterial(itemid, getData());
 		} catch (Exception e) {
-			material = plugin.itemManager.getItem(item[0]).getCustomItem();
-			if (material == null) {
-				throw new DataFormatException("Your ingredient is in wrong format: " + ingredient);
+			if (plugin.itemManager.getItem(ingredient) != null) {
+				material = plugin.itemManager.getItem(ingredient).getCustomItem();
 			}
 		}
-		try {
-			if (SpoutManager.getMaterialManager().isCustomItem(new ItemStack(itemid, itemdata))) {
-				material = SpoutManager.getMaterialManager().getCustomItem(new ItemStack(itemid, itemdata));
-			} else {
-				material = MaterialData.getMaterial(itemid);
-			}
-		} catch (Exception e) {
-			throw new DataFormatException("Couldn't estabilish material from " + ingredient);
+			plugin.log.info("k"+material);
+		if (material == null) {
+			throw new DataFormatException("Ingredient \"" + ingredient + "\" doesn't exist");
 		}
 	}
 	public Material getMaterial() throws Exception {
 		if (material == null) {
-			throw new DataFormatException("Id " + itemid + " of ingredient doesn't exist");
+			throw new DataFormatException("Ingredient \"" + ingredient + "\" doesn't exist");
 		}
 		return material;
+	}
+	public Integer getAmount() {
+		return amount;
 	}
 	public Short getData() {
 		return itemdata.shortValue();
@@ -59,7 +55,7 @@ public class Ingredient {
 	}
 	public org.bukkit.Material getOldMaterial() throws Exception {
 		if (material == null) {
-			throw new DataFormatException("Id " + itemid + " of ingredient doesn't exist");
+			throw new DataFormatException("Ingredient \"" + ingredient + "\" doesn't exist");
 		}
 		return new org.bukkit.material.MaterialData(itemid).getItemType();
 	}

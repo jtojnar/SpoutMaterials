@@ -83,7 +83,7 @@ public class UltraItems extends JavaPlugin {
 									Ingredient ingredient = new Ingredient((String) recipe.get("ingredients"), this);
 									FurnaceRecipe rcp = new FurnaceRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount), new MaterialData(ingredient.getOldMaterial(), ingredient.getDataByte()));
 									Bukkit.getServer().addRecipe(rcp);
-									log.info("[" + pdfile.getName() + "] " + "Added furnace recipe");
+									log.info("[" + pdfile.getName() + "] " + "Added furnace recipe for " + name);
 								} catch (Exception e) {
 									log.warning("[" + pdfile.getName() + "] " + e.getMessage());
 								}
@@ -91,14 +91,14 @@ public class UltraItems extends JavaPlugin {
 								SpoutShapedRecipe rcp = new SpoutShapedRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount)).shape("abc", "def", "ghi");
 								String ingredients = (String) recipe.get("ingredients");
 								doRecipe(rcp, ingredients);
-								log.info("[" + pdfile.getName() + "] " + "Added shaped recipe");
+								log.info("[" + pdfile.getName() + "] " + "Added shaped recipe for " + name);
 							} else if (type.equalsIgnoreCase("shapeless")) {
 								SpoutShapelessRecipe rcp = new SpoutShapelessRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount));
 								String ingredients = (String) recipe.get("ingredients");
 								doRecipe(rcp, ingredients);
-								log.info("[" + pdfile.getName() + "] " + "Added shapeless recipe");
+								log.info("[" + pdfile.getName() + "] " + "Added shapeless recipe for " + name);
 							} else {
-								log.warning("[" + pdfile.getName() + "] " + "You have to specify valid type of recipe (furnace, shaped, shapeless)");
+								log.warning("[" + pdfile.getName() + "] " + "You have to specify valid type of recipe (furnace, shaped, shapeless) for " + name);
 							}
 						}
 					}
