@@ -7,7 +7,11 @@ main: cz.ogion.ultraitems.UltraItems
 commands:
   ultraitems:
     description: Provides functions to reload the config.
-    usage: /ultraitems <reload|list|itemname|replace>
+    usage: |
+      /ultraitems reload
+      /ultraitems list
+      /ultraitems replace
+      /ultraitems <itemname> [amount]
     aliases: [ui]
 permissions:
     ultraitems.*:

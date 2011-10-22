@@ -33,7 +33,6 @@ public class Ingredient {
 				material = plugin.itemManager.getItem(ingredient).getCustomItem();
 			}
 		}
-			plugin.log.info("k"+material);
 		if (material == null) {
 			throw new DataFormatException("Ingredient \"" + ingredient + "\" doesn't exist");
 		}
