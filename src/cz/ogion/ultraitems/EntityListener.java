@@ -23,7 +23,6 @@ public class EntityListener extends org.bukkit.event.entity.EntityListener {
 				if (player.getItemInHand() != null) {
 					CustomItem ci = plugin.itemManager.getItem(player.getItemInHand());
 					if(ci != null) {
-						plugin.log.info("z"+ci);
 						Integer entitydamage = ci.getEntityDamage();
 						event.setDamage(entitydamage);
 					}

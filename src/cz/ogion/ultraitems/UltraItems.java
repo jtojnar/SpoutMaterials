@@ -153,7 +153,7 @@ public class UltraItems extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("ultraitems")){
-			if(args.length == 1) {
+			if(args.length > 0) {
 				if(args[0].equalsIgnoreCase("reload")) {
 					if(sender.hasPermission("ultraitems.reload")) {
 						loadConfig();
@@ -213,7 +213,7 @@ public class UltraItems extends JavaPlugin {
 						sender.sendMessage("UltraItems: " + ChatColor.YELLOW + "Items from your inventory were replaced");
 					}
 					return true;
-				} else if(config.contains(args[0])) {
+				} else if(itemManager.getItem(args[0]) != null) {
 					if (sender instanceof ConsoleCommandSender){
 						sender.sendMessage(ChatColor.RED + "This command must be run in-game.");
 					} else {
@@ -221,14 +221,25 @@ public class UltraItems extends JavaPlugin {
 						if (who.hasPermission("ultraitems.give")){
 							if (who.hasPermission("ultraitems.give.*") || who.hasPermission("ultraitems.give."+args[0])){
 								try {
-									CustomItem ci = itemManager.getItem(args[0]).getCustomItem();
-									ItemStack stack = SpoutManager.getMaterialManager().getCustomItemStack(ci, 1);
-									int slot = who.getInventory().firstEmpty();
-									if(slot < 0) {
-										who.getWorld().dropItem(who.getLocation(), stack);
-									} else {
-										who.getInventory().addItem(stack);
+									Integer amount = 1;
+									Integer maxStackSize = 64;
+									if(args.length > 1) {
+										amount = Integer.decode(args[1]);
 									}
+									CustomItem ci = itemManager.getItem(args[0]).getCustomItem();
+									while (amount > 0) {
+										Integer size = amount >= maxStackSize ? maxStackSize : amount;
+										ItemStack stack = SpoutManager.getMaterialManager().getCustomItemStack(ci, size);
+										int slot = who.getInventory().firstEmpty();
+										if(slot < 0) {
+											who.getWorld().dropItem(who.getLocation(), stack);
+											break;
+										} else {
+											who.getInventory().addItem(stack);
+										}
+										amount -= size;
+									}
+
 									sender.sendMessage(ChatColor.GREEN + "Here you are!");
 								} catch (Exception e) {
 									sender.sendMessage(ChatColor.RED + "Error:"+e.getMessage());
