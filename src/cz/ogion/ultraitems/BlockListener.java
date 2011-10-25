@@ -11,6 +11,9 @@ public class BlockListener extends org.bukkit.event.block.BlockListener {
 
 	@Override
 	public void onBlockDamage(BlockDamageEvent event) {
-		
+		CustomItem item = plugin.itemManager.getItem(event.getPlayer().getItemInHand());
+		if (item != null && item.getInstantBreak()) {
+			event.setInstaBreak(true);
+		}
 	}
 }

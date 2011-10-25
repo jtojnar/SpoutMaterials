@@ -12,6 +12,7 @@ public class CustomItem {
 	private String name, title, textureUrl;
 	private Plugin plugin;
 	private Integer entityDamage;
+	private boolean instantBreak;
 	private org.getspout.spoutapi.material.CustomItem ci;
 	private HashMap<ItemActionType, ItemAction> actions = new HashMap<ItemActionType, ItemAction>();
 
@@ -62,6 +63,7 @@ public class CustomItem {
 		ConfigurationSection lclick = config.getConfigurationSection("lclick");
 		ConfigurationSection rclick = config.getConfigurationSection("rclick");
 		entityDamage = config.getInt("damage.entity"); 
+		instantBreak = config.getBoolean("instantbreak", false);
 		if (lclick != null) {
 			ItemAction itemAction = new ItemAction(ItemActionType.LCLICK);
 			String action = lclick.getString("action", null);
@@ -129,6 +131,9 @@ public class CustomItem {
 	}
 	public Integer getEntityDamage() {
 		return entityDamage;
+	}
+	public boolean getInstantBreak() {
+		return instantBreak;
 	}
 
 	// TODO: maxstacksize
