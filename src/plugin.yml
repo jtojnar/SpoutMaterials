@@ -21,6 +21,7 @@ permissions:
             ultraitem.list: true
             ultraitem.give: true
             ultraitem.give.*: true
+            ultraitem.craft.*: true
     ultraitems.reload:
         description: Reload config
         default: op
@@ -32,4 +33,7 @@ permissions:
         default: true
     ultraitems.give.*:
         description: Give all items
+        default: true
+    ultraitems.craft.*:
+        description: Craft all items
         default: true
