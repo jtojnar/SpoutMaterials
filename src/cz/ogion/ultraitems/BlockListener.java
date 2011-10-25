@@ -6,7 +6,6 @@ public class BlockListener extends org.bukkit.event.block.BlockListener {
 	UltraItems plugin;
 
 	public BlockListener(UltraItems instance) {
-		// TODO Auto-generated constructor stub
 		plugin = instance;
 	}
 
