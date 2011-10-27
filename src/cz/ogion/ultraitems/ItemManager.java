@@ -5,6 +5,8 @@ import java.util.zip.DataFormatException;
 
 import org.bukkit.inventory.ItemStack;
 
+
+
 public class ItemManager {
 	public HashMap<String, CustomItem> items = new HashMap<String, CustomItem>();
 	public HashMap<Integer, HashMap<Integer, String>> itemIdCache = new HashMap<Integer, HashMap<Integer,String>>();

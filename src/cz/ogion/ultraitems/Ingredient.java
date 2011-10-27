@@ -5,6 +5,7 @@ import java.util.zip.DataFormatException;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 
+
 public class Ingredient {
 	private Integer itemid = 0;
 	private Integer itemdata = 0;

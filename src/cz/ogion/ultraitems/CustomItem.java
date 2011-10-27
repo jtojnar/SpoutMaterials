@@ -1,4 +1,5 @@
 package cz.ogion.ultraitems;
+
 import java.util.HashMap;
 import java.util.zip.DataFormatException;
 

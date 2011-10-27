@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+
+
 public class EntityListener extends org.bukkit.event.entity.EntityListener {
 	UltraItems plugin;
 	ConfigurationSection config;

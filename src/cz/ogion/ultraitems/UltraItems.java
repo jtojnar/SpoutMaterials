@@ -28,6 +28,8 @@ import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
 import org.getspout.spoutapi.material.CustomItem;
 
+
+
 public class UltraItems extends JavaPlugin {
 	public ConfigurationSection config;
 	Logger log = Logger.getLogger("Minecraft");
@@ -35,7 +37,7 @@ public class UltraItems extends JavaPlugin {
 	PlayerListener playerListener;
 	EntityListener entityListener;
 	BlockListener blockListener;
-	ItemManager itemManager;
+	public ItemManager itemManager;
 
 	@Override
 	public void onDisable() {}
