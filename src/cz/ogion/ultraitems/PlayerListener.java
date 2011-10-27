@@ -15,8 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.getspout.spoutapi.SpoutManager;
 
-
-
 public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	UltraItems plugin;
 	ConfigurationSection config;
