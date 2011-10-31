@@ -3,7 +3,6 @@ package cz.ogion.ultraitems;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
@@ -30,7 +29,7 @@ import org.getspout.spoutapi.material.CustomItem;
 
 public class UltraItems extends JavaPlugin {
 	public ConfigurationSection config;
-	Logger log = Logger.getLogger("Minecraft");
+	public Logger log = Logger.getLogger("Minecraft");
 	private PluginDescriptionFile pdfile;
 	PlayerListener playerListener;
 	EntityListener entityListener;
@@ -105,7 +104,7 @@ public class UltraItems extends JavaPlugin {
 					log.info("[" + pdfile.getName() + "] " + "Added item "+name+" ("+ci.getRawId()+":"+ci.getRawData()+")");
 					// TODO: add to general
 				} catch (NoSuchMethodError e) {
-					log.log(Level.SEVERE, "[" + pdfile.getName() + "] " + "NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
+					log.severe("[" + pdfile.getName() + "] " + "NoSuchMethod Error. This is probably because your spout doesn't support required api, please upgrade to dev version. If you have dev version report the error bellow:");
 					e.printStackTrace();
 				} catch (DataFormatException e) {
 					log.warning("[" + pdfile.getName() + "] " + e.getMessage());
@@ -114,8 +113,7 @@ public class UltraItems extends JavaPlugin {
 				}
 			}
 		} else {
-			getConfig().createSection("UltraItems:");
-			saveConfig();
+			log.warning("[" + pdfile.getName() + "] Config is unproperly formated, please visit UltraItems page for example config");
 		}
 	}
 	private void doRecipe(Recipe rcp, String ingredients) throws Exception {

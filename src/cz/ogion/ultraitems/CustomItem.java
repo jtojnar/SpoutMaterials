@@ -1,6 +1,7 @@
 package cz.ogion.ultraitems;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,6 +13,7 @@ public class CustomItem {
 	private ItemType type;
 	private String name, title, textureUrl;
 	private Plugin plugin;
+	Logger log = Logger.getLogger("Minecraft");
 	private Integer entityDamage;
 	private boolean instantBreak;
 	private org.getspout.spoutapi.material.CustomItem ci;
