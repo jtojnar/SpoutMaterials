@@ -32,6 +32,8 @@ public class Ingredient {
 		} catch (Exception e) {
 			if (plugin.itemManager.getItem(ingredient) != null) {
 				material = plugin.itemManager.getItem(ingredient).getCustomItem();
+				itemid = material.getRawId();
+				itemdata = material.getRawData();
 			}
 		}
 		if (material == null) {
@@ -57,6 +59,7 @@ public class Ingredient {
 		if (material == null) {
 			throw new DataFormatException("Ingredient \"" + ingredient + "\" doesn't exist");
 		}
+//		java.util.logging.Logger.getLogger("Minecraft").info("Z"+itemid+"i"+itemdata);
 		return new org.bukkit.material.MaterialData(itemid).getItemType();
 	}
 }

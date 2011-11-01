@@ -65,6 +65,10 @@ public class CustomItem {
 	public CustomItem setConfig(ConfigurationSection config) {
 		ConfigurationSection lclick = config.getConfigurationSection("lclick");
 		ConfigurationSection rclick = config.getConfigurationSection("rclick");
+//		List<?> events = config.getList("events");
+//		for (Object event : events) {
+//			// TODO: multiple events init
+//		}
 		entityDamage = config.getInt("damage.entity"); 
 		instantBreak = config.getBoolean("instantbreak", false);
 		if (lclick != null) {

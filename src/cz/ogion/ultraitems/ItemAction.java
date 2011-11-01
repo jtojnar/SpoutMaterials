@@ -1,13 +1,13 @@
 package cz.ogion.ultraitems;
 
 public class ItemAction {
-	private String bypass;
+	private String bypass = null;
 	private ItemActionType type;
-	private String action;
-	private Boolean consume;
-	private Integer health;
-	private Integer hunger;
-	private String sound;
+	private String action = null;
+	private Boolean consume = false;
+	private Integer health = 0;
+	private Integer hunger = 0;
+	private String sound = null;
 
 	public ItemAction(ItemActionType type) {
 		setType(type);

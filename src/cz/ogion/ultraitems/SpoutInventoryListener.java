@@ -41,4 +41,5 @@ public class SpoutInventoryListener extends InventoryListener {
 	}
 	// TODO: crafting sound
 	// TODO: burning time
+	// TODO: returned item (like cake crafting)
 }

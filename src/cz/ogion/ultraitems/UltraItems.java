@@ -163,7 +163,7 @@ public class UltraItems extends JavaPlugin {
 				} else if(args[0].equalsIgnoreCase("list")) {
 					if(sender.hasPermission("ultraitems.list")) {
 						StringBuilder sb = new StringBuilder();
-						for(String s : config.getKeys(false)) {
+						for(String s : itemManager.items.keySet()) {
 							sb.append(s);
 							sb.append(" ");
 						}

@@ -103,6 +103,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 							ItemStack is = player.getItemInHand();
 							is.setAmount(is.getAmount() - 1);
 							player.setItemInHand(is);
+							// TODO: returning another item (drinking coffee)
 						}
 						if (rclick.getHealth() != 0) {
 							EntityRegainHealthEvent regainevent = new EntityRegainHealthEvent(player, rclick.getHealth(), RegainReason.CUSTOM);
