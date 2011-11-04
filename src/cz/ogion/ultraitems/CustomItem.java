@@ -19,14 +19,23 @@ public class CustomItem {
 	private org.getspout.spoutapi.material.CustomItem ci;
 	private HashMap<ItemActionType, ItemAction> actions = new HashMap<ItemActionType, ItemAction>();
 
-	public CustomItem(ItemType type, String name, String title, String textureurl, Plugin plugin) throws DataFormatException {
+	public CustomItem(ItemType type, String name, String title, String textureurl, Plugin plugin) throws Exception {
 		setName(name);
-		this.type = type;
+		setType(type);
+		setTitle(title);
+		setTexture(textureurl);
 		switch (this.type) {
 		case GENERIC_ITEM:
 			ci = new GenericCustomItem(plugin, title, textureurl);
 			break;
+		default:
+			throw new Exception("Invalid type specified");
 		}
+	}
+	public CustomItem setType(ItemType type) {
+		this.type = type;
+		return this;
+		
 	}
 	public CustomItem setName(String name) throws DataFormatException {
 		if (name == null) {
@@ -39,7 +48,6 @@ public class CustomItem {
 		if (textureUrl == null) {
 			throw new DataFormatException("You have to specify item texture url");
 		}
-		SpoutManager.getFileManager().addToCache(plugin, textureUrl);
 		this.textureUrl = textureUrl;
 		return this;
 	}

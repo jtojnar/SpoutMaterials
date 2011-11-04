@@ -1,7 +1,6 @@
 package cz.ogion.ultraitems;
 
 import java.util.HashMap;
-import java.util.zip.DataFormatException;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -24,9 +23,9 @@ public class ItemManager {
 	 * @param title title shown in inventory
 	 * @param textureUrl URL of used texture
 	 * @return added custom item
-	 * @throws DataFormatException
+	 * @throws Exception 
 	 */
-	public CustomItem addItem(ItemType type, String name, String title, String textureUrl) throws DataFormatException {
+	public CustomItem addItem(ItemType type, String name, String title, String textureUrl) throws Exception {
 		CustomItem item = new CustomItem(type, name, title, textureUrl, plugin);
 		items.put(name, item);
 		if (!itemIdCache.containsKey(item.getCustomItem().getRawId())) {

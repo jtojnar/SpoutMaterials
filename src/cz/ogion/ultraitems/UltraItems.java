@@ -23,6 +23,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.inventory.SpoutShapelessRecipe;
 import org.getspout.spoutapi.material.CustomItem;
@@ -80,19 +81,19 @@ public class UltraItems extends JavaPlugin {
 							if (type.equalsIgnoreCase("furnace")) {
 								try {
 									Ingredient ingredient = new Ingredient((String) recipe.get("ingredients"), this);
-									FurnaceRecipe rcp = new FurnaceRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount), new MaterialData(ingredient.getOldMaterial(), ingredient.getDataByte()));
+									FurnaceRecipe rcp = new FurnaceRecipe(new SpoutItemStack(ci, amount), new MaterialData(ingredient.getOldMaterial(), ingredient.getDataByte()));
 									Bukkit.getServer().addRecipe(rcp);
 									log.info("[" + pdfile.getName() + "] " + "Added furnace recipe for " + name);
 								} catch (Exception e) {
 									log.warning("[" + pdfile.getName() + "] " + e.getMessage());
 								}
 							} else if (type.equalsIgnoreCase("shaped")) {
-								SpoutShapedRecipe rcp = new SpoutShapedRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount)).shape("abc", "def", "ghi");
+								SpoutShapedRecipe rcp = new SpoutShapedRecipe(new SpoutItemStack(ci, amount)).shape("abc", "def", "ghi");
 								String ingredients = (String) recipe.get("ingredients");
 								doRecipe(rcp, ingredients);
 								log.info("[" + pdfile.getName() + "] " + "Added shaped recipe for " + name);
 							} else if (type.equalsIgnoreCase("shapeless")) {
-								SpoutShapelessRecipe rcp = new SpoutShapelessRecipe(SpoutManager.getMaterialManager().getCustomItemStack(ci, amount));
+								SpoutShapelessRecipe rcp = new SpoutShapelessRecipe(new SpoutItemStack(ci, amount));
 								String ingredients = (String) recipe.get("ingredients");
 								doRecipe(rcp, ingredients);
 								log.info("[" + pdfile.getName() + "] " + "Added shapeless recipe for " + name);
@@ -203,7 +204,7 @@ public class UltraItems extends JavaPlugin {
 										a = amount;
 									}
 									amount -= a;
-									who.getInventory().addItem(SpoutManager.getMaterialManager().getCustomItemStack(itemManager.getItem(name).getCustomItem(), a));
+									who.getInventory().addItem(new SpoutItemStack(itemManager.getItem(name).getCustomItem(), a));
 								}
 							} catch (Exception e) {
 							}
@@ -227,7 +228,7 @@ public class UltraItems extends JavaPlugin {
 									CustomItem ci = itemManager.getItem(args[0]).getCustomItem();
 									while (amount > 0) {
 										Integer size = amount >= maxStackSize ? maxStackSize : amount;
-										ItemStack stack = SpoutManager.getMaterialManager().getCustomItemStack(ci, size);
+										ItemStack stack = new SpoutItemStack(ci, size);
 										int slot = who.getInventory().firstEmpty();
 										if(slot < 0) {
 											who.getWorld().dropItem(who.getLocation(), stack);
