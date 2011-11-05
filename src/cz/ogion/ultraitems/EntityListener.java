@@ -21,7 +21,7 @@ public class EntityListener extends org.bukkit.event.entity.EntityListener {
 			if (damager instanceof Player) {
 				Player player = (Player) damager;
 				if (player.getItemInHand() != null) {
-					CustomItem ci = plugin.itemManager.getItem(player.getItemInHand());
+					UICustomItem ci = plugin.itemManager.getItem(player.getItemInHand());
 					if(ci != null) {
 						Integer entitydamage = ci.getEntityDamage();
 						event.setDamage(entitydamage);

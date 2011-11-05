@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.ogion</groupId>
 	<artifactId>ultraitems</artifactId>
-	<version>0.9</version>
+	<version>0.10p1</version>
 	<name>UltraItems</name>
 	<packaging>jar</packaging>
 	<url>http://ui.ogion.cz</url>

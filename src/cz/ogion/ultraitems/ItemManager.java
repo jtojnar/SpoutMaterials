@@ -5,34 +5,28 @@ import java.util.HashMap;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemManager {
-	public HashMap<String, CustomItem> items = new HashMap<String, CustomItem>();
+	public HashMap<String, UICustomItem> items = new HashMap<String, UICustomItem>();
 	public HashMap<Integer, HashMap<Integer, String>> itemIdCache = new HashMap<Integer, HashMap<Integer,String>>();
-	private UltraItems plugin;
 
 	/**
 	 * Create item manager
 	 * @param instance the plugin instance used for spout cache
 	 */
-	public ItemManager(UltraItems instance) {
-		plugin = instance;
+	public ItemManager() {
 	}
 	/**
 	 * Add item to the manager
-	 * @param type type of item
-	 * @param name unique name used for getting the item
-	 * @param title title shown in inventory
-	 * @param textureUrl URL of used texture
-	 * @return added custom item
+	 * @param item item to be added
+	 * @return item manager
 	 * @throws Exception 
 	 */
-	public CustomItem addItem(ItemType type, String name, String title, String textureUrl) throws Exception {
-		CustomItem item = new CustomItem(type, name, title, textureUrl, plugin);
-		items.put(name, item);
+	public ItemManager addItem(UICustomItem item) throws Exception {
+		items.put(item.getName(), item);
 		if (!itemIdCache.containsKey(item.getCustomItem().getRawId())) {
 			itemIdCache.put(item.getCustomItem().getRawId(), new HashMap<Integer, String>());
 		}
-		itemIdCache.get(item.getCustomItem().getRawId()).put(item.getCustomItem().getRawData(), name);
-		return item;
+		itemIdCache.get(item.getCustomItem().getRawId()).put(item.getCustomItem().getRawData(), item.getName());
+		return this;
 	}
 	/**
 	 * Remove item from manager
@@ -46,7 +40,7 @@ public class ItemManager {
 	 * @param name name of item
 	 * @return custom item with specified name
 	 */
-	public CustomItem getItem(String name) {
+	public UICustomItem getItem(String name) {
 		return items.get(name);
 	}
 	/**
@@ -55,7 +49,7 @@ public class ItemManager {
 	 * @param data data value of custom item
 	 * @return custom item with specified name
 	 */
-	public CustomItem getItem(Integer id, Integer data) {
+	public UICustomItem getItem(Integer id, Integer data) {
 		try {
 			return items.get(itemIdCache.get(id).get(data));
 		} catch(Exception e) {
@@ -67,7 +61,7 @@ public class ItemManager {
 	 * @param item stack of items
 	 * @return custom item or null if not existing
 	 */
-	public CustomItem getItem(ItemStack item) {
+	public UICustomItem getItem(ItemStack item) {
 		try {
 			return items.get(itemIdCache.get(item.getTypeId()).get(((Short) item.getDurability()).intValue()));
 		} catch(Exception e) {

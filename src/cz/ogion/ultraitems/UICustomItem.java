@@ -6,20 +6,19 @@ import java.util.zip.DataFormatException;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
-import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.material.CustomItem;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 
-public class CustomItem {
+public class UICustomItem {
 	private ItemType type;
 	private String name, title, textureUrl;
-	private Plugin plugin;
 	Logger log = Logger.getLogger("Minecraft");
 	private Integer entityDamage;
 	private boolean instantBreak;
-	private org.getspout.spoutapi.material.CustomItem ci;
+	private CustomItem ci;
 	private HashMap<ItemActionType, ItemAction> actions = new HashMap<ItemActionType, ItemAction>();
 
-	public CustomItem(ItemType type, String name, String title, String textureurl, Plugin plugin) throws Exception {
+	public UICustomItem(ItemType type, String name, String title, String textureurl, Plugin plugin) throws Exception {
 		setName(name);
 		setType(type);
 		setTitle(title);
@@ -32,33 +31,33 @@ public class CustomItem {
 			throw new Exception("Invalid type specified");
 		}
 	}
-	public CustomItem setType(ItemType type) {
+	public UICustomItem setType(ItemType type) {
 		this.type = type;
 		return this;
 		
 	}
-	public CustomItem setName(String name) throws DataFormatException {
+	public UICustomItem setName(String name) throws DataFormatException {
 		if (name == null) {
 			throw new DataFormatException("You have to specify item name");
 		}
 		this.name = name;
 		return this;
 	}
-	public CustomItem setTexture(String textureUrl) throws DataFormatException {
+	public UICustomItem setTexture(String textureUrl) throws DataFormatException {
 		if (textureUrl == null) {
 			throw new DataFormatException("You have to specify item texture url");
 		}
 		this.textureUrl = textureUrl;
 		return this;
 	}
-	public CustomItem setTitle(String title) throws DataFormatException {
+	public UICustomItem setTitle(String title) throws DataFormatException {
 		if (title == null) {
 			throw new DataFormatException("You have to specify item title");
 		}
 		this.title = title;
 		return this;
 	}
-	public org.getspout.spoutapi.material.CustomItem getCustomItem() {
+	public CustomItem getCustomItem() {
 		return ci;
 	}
 	public String getTextureUrl() {
@@ -70,7 +69,7 @@ public class CustomItem {
 	public String getName() {
 		return name;
 	}
-	public CustomItem setConfig(ConfigurationSection config) {
+	public UICustomItem setConfig(ConfigurationSection config) {
 		ConfigurationSection lclick = config.getConfigurationSection("lclick");
 		ConfigurationSection rclick = config.getConfigurationSection("rclick");
 //		List<?> events = config.getList("events");
@@ -137,7 +136,7 @@ public class CustomItem {
 		}
 		return this;
 	}
-	public CustomItem addAction(ItemAction action) {
+	public UICustomItem addAction(ItemAction action) {
 		actions.put(action.getType(), action);
 		return this;
 	}

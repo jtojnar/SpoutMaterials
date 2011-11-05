@@ -29,21 +29,34 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 			Action action = event.getAction();
 			Player player = event.getPlayer();
 			if (event.getItem() != null) {
-				CustomItem ci = plugin.itemManager.getItem(event.getItem());
+				UICustomItem ci = plugin.itemManager.getItem(event.getItem());
 				if (ci != null) {
 					ItemAction lclick = ci.getAction(ItemActionType.LCLICK);
 					ItemAction rclick = ci.getAction(ItemActionType.RCLICK);
 					if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
 						if (lclick.getAction() != null) {
-							String permissionbypass = lclick.getPermissionBypass();
-							if(permissionbypass != null){
-								PermissionAttachment attachment = player.addAttachment(plugin);
-								attachment.setPermission(permissionbypass, true);
-								player.chat(lclick.getAction());
-								attachment.unsetPermission(permissionbypass);
-								player.removeAttachment(attachment);
-							} else {
-								player.chat(lclick.getAction());
+							String[] performedAction = lclick.getAction().split("\\r?\\n");
+							if(performedAction.length>0) {
+								if (lclick.getPermissionBypass() != null) {
+									String[] permissionbypass = lclick.getPermissionBypass().split("\\r?\\n");
+									if(permissionbypass.length>0){
+										PermissionAttachment attachment = player.addAttachment(plugin);
+										for (String pb : permissionbypass) {
+											attachment.setPermission(pb, true);
+										}
+										for (String pa : performedAction) {
+											player.chat(pa);
+										}
+										for (String pb : permissionbypass) {
+											attachment.unsetPermission(pb);
+										}
+										player.removeAttachment(attachment);
+									}
+								} else {
+									for (String pa : performedAction) {
+										player.chat(pa);
+									}
+								}
 							}
 						}
 						// TODO: delay
@@ -88,15 +101,28 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 						event.setUseItemInHand(Result.DENY);
 					} else if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && rclick != null) {
 						if (rclick.getAction() != null) {
-							String permissionbypass = rclick.getPermissionBypass();
-							if(permissionbypass != null){
-								PermissionAttachment attachment = player.addAttachment(plugin);
-								attachment.setPermission(permissionbypass, true);
-								player.chat(rclick.getAction());
-								attachment.unsetPermission(permissionbypass);
-								player.removeAttachment(attachment);
-							} else {
-								player.chat(rclick.getAction());
+							String[] performedAction = rclick.getAction().split("\\r?\\n");
+							if(performedAction.length>0) {
+								if (rclick.getPermissionBypass() != null) {
+									String[] permissionbypass = rclick.getPermissionBypass().split("\\r?\\n");
+									if(permissionbypass.length>0){
+										PermissionAttachment attachment = player.addAttachment(plugin);
+										for (String pb : permissionbypass) {
+											attachment.setPermission(pb, true);
+										}
+										for (String pa : performedAction) {
+											player.chat(pa);
+										}
+										for (String pb : permissionbypass) {
+											attachment.unsetPermission(pb);
+										}
+										player.removeAttachment(attachment);
+									}
+								} else {
+									for (String pa : performedAction) {
+										player.chat(pa);
+									}
+								}
 							}
 						}
 						if (rclick.getConsume()) {

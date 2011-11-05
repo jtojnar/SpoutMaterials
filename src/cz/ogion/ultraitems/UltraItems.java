@@ -47,7 +47,7 @@ public class UltraItems extends JavaPlugin {
 		playerListener = new PlayerListener(this);
 		entityListener = new EntityListener(this);
 		blockListener = new BlockListener(this);
-		itemManager = new ItemManager(this);
+		itemManager = new ItemManager();
 		pm.registerEvent(Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Type.ENTITY_DAMAGE, this.entityListener, Event.Priority.Normal, this);
 		pm.registerEvent(Type.BLOCK_DAMAGE, this.blockListener, Event.Priority.Normal, this);
@@ -68,7 +68,9 @@ public class UltraItems extends JavaPlugin {
 					String name = item.getKey();
 					String url = value.getString("url", null);
 					String title = value.getString("title", null);
-					CustomItem ci = itemManager.addItem(ItemType.GENERIC_ITEM, name, title, url).setConfig(value).getCustomItem();
+					UICustomItem uci = new UICustomItem(ItemType.GENERIC_ITEM, name, title, url, this).setConfig(value);
+					itemManager.addItem(uci);
+					CustomItem ci = uci.getCustomItem();
 
 					List<Map<String, Object>> recipes = value.getList("recipes");
 					if (recipes != null) {
@@ -225,7 +227,7 @@ public class UltraItems extends JavaPlugin {
 									if(args.length > 1) {
 										amount = Integer.decode(args[1]);
 									}
-									CustomItem ci = itemManager.getItem(args[0]).getCustomItem();
+									org.getspout.spoutapi.material.CustomItem ci = itemManager.getItem(args[0]).getCustomItem();
 									while (amount > 0) {
 										Integer size = amount >= maxStackSize ? maxStackSize : amount;
 										ItemStack stack = new SpoutItemStack(ci, size);
