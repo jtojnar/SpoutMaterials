@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.getspout.spoutapi.SpoutManager;
 
+
 public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	UltraItems plugin;
 	ConfigurationSection config;
@@ -31,6 +32,8 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 			if (event.getItem() != null) {
 				UICustomItem ci = plugin.itemManager.getItem(event.getItem());
 				if (ci != null) {
+					String[] searchList = new String[]{"$player", "$coords", "$world"};
+					String[] replaceList = new String[]{player.getName(), player.getLocation().getX()+","+player.getLocation().getY()+","+player.getLocation().getZ(), player.getWorld().getName()};
 					ItemAction lclick = ci.getAction(ItemActionType.LCLICK);
 					ItemAction rclick = ci.getAction(ItemActionType.RCLICK);
 					if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && lclick != null) {
@@ -45,7 +48,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 											attachment.setPermission(pb, true);
 										}
 										for (String pa : performedAction) {
-											player.chat(pa);
+											player.chat(StringUtils.replaceEach(pa, searchList, replaceList));
 										}
 										for (String pb : permissionbypass) {
 											attachment.unsetPermission(pb);
@@ -54,7 +57,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 									}
 								} else {
 									for (String pa : performedAction) {
-										player.chat(pa);
+										player.chat(StringUtils.replaceEach(pa, searchList, replaceList));
 									}
 								}
 							}
@@ -111,7 +114,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 											attachment.setPermission(pb, true);
 										}
 										for (String pa : performedAction) {
-											player.chat(pa);
+											player.chat(StringUtils.replaceEach(pa, searchList, replaceList));
 										}
 										for (String pb : permissionbypass) {
 											attachment.unsetPermission(pb);
@@ -120,7 +123,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 									}
 								} else {
 									for (String pa : performedAction) {
-										player.chat(pa);
+										player.chat(StringUtils.replaceEach(pa, searchList, replaceList));
 									}
 								}
 							}
